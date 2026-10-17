@@ -1,5 +1,7 @@
 // قم بتعديل مسار الصورة حسب مكانها في مشروعك
 
+// رابط حساب الديسكورد الخاص بالمطوّر (يُستخدم في زر "Programmer" بالأسفل).
+const DISCORD_PROFILE = 'https://discord.com/users/1al_badry';
 
 const Hero = () => {
   return (
@@ -24,7 +26,7 @@ const Hero = () => {
             className="text-white text-4xl lg:text-6xl tracking-wide" 
             style={{ fontFamily: "'Brush Script MT', 'Caveat', cursive" }}
           >
-            Premium Bot ©
+            Free Bot ©
           </span>
         </div>
       </div>
@@ -49,10 +51,12 @@ const Hero = () => {
           Get Started
         </a>
         <a 
-          href="#pricing" 
+          href={DISCORD_PROFILE}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-white font-bold uppercase text-sm lg:text-lg tracking-widest border-b-4 border-[#e62b1e] pb-1 hover:text-[#e62b1e] transition-colors"
         >
-          Free
+          Programmer
         </a>
       </div>
 

@@ -75,4 +75,10 @@ export const CHANNEL_FIELDS = [
     label: 'Kill Feed',
     hint: 'Live kills and gank / battle alerts.',
   },
+  {
+    key: 'announcementsChannelId',
+    label: 'Announcements',
+    hint: 'Optional — posts "X was accepted" for approved join requests with a mention.',
+    optional: true,
+  },
 ];

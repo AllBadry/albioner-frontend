@@ -26,6 +26,13 @@ const DropGrid = ({ drops }) => (
   </div>
 );
 
+const MobileStat = ({ label, value, cls }) => (
+  <div className="bg-[#030303] border border-white/5 rounded-lg py-1.5">
+    <div className={`text-sm font-bold tabular-nums ${cls}`}>{value}</div>
+    <div className="text-gray-600 text-[9px] font-bold uppercase tracking-widest mt-0.5">{label}</div>
+  </div>
+);
+
 const Members = ({ guild }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -90,7 +97,7 @@ const Members = ({ guild }) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search a member…"
-          className="bg-[#030303] border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#e62b1e] transition-colors"
+          className="flex-1 min-w-[160px] bg-[#030303] border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#e62b1e] transition-colors"
         />
         <button
           onClick={sync}
@@ -134,34 +141,61 @@ const Members = ({ guild }) => {
             <span className="text-right">Death fame</span>
             <span className="text-right">Loot lost</span>
           </div>
-          {filtered.map((m) => (
-            <div key={m.memberId} className="border-b border-white/5 last:border-0">
-              <button
-                onClick={() => setOpenId(openId === m.memberId ? null : m.memberId)}
-                disabled={m.drops.length === 0}
-                className="w-full grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1.1fr_1.1fr_1.2fr] gap-4 px-5 py-3.5 text-left hover:bg-white/5 transition-colors disabled:cursor-default"
-              >
-                <span className="text-white font-bold text-sm truncate flex items-center gap-2">
-                  {m.name}
-                  <span className="text-gray-600 text-[10px] font-normal uppercase tracking-widest">IP {m.averageItemPower}</span>
-                  {m.drops.length > 0 && <span className="text-gray-600 text-xs">▾</span>}
-                </span>
-                <span className="text-green-400 text-sm font-bold tabular-nums text-right">{m.kills}</span>
-                <span className="text-red-400 text-sm font-bold tabular-nums text-right">{m.deaths}</span>
-                <span className="text-gray-300 text-sm tabular-nums text-right">{number.format(m.killFame || 0)}</span>
-                <span className="text-gray-400 text-sm tabular-nums text-right">{number.format(m.deathFame || 0)}</span>
-                <span className="text-gray-300 text-sm tabular-nums text-right">
-                  {m.lostValue > 0 ? <span className="text-amber-400/80">{silver(m.lostValue)}</span> : '—'}
-                </span>
-              </button>
-              {openId === m.memberId && m.drops.length > 0 && (
-                <div className="px-5 pb-4">
-                  <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Items dropped ({m.drops.length})</p>
-                  <DropGrid drops={m.drops} />
-                </div>
-              )}
-            </div>
-          ))}
+          {filtered.map((m) => {
+            const open = openId === m.memberId;
+            return (
+              <div key={m.memberId} className="border-b border-white/5 last:border-0">
+                {/* Desktop row */}
+                <button
+                  onClick={() => setOpenId(open ? null : m.memberId)}
+                  disabled={m.drops.length === 0}
+                  className="hidden md:grid w-full grid-cols-[2fr_1fr_1fr_1.1fr_1.1fr_1.2fr] gap-4 px-5 py-3.5 text-left hover:bg-white/5 transition-colors disabled:cursor-default"
+                >
+                  <span className="text-white font-bold text-sm truncate flex items-center gap-2">
+                    {m.name}
+                    <span className="text-gray-600 text-[10px] font-normal uppercase tracking-widest">IP {m.averageItemPower}</span>
+                    {m.drops.length > 0 && <span className="text-gray-600 text-xs">▾</span>}
+                  </span>
+                  <span className="text-green-400 text-sm font-bold tabular-nums text-right">{m.kills}</span>
+                  <span className="text-red-400 text-sm font-bold tabular-nums text-right">{m.deaths}</span>
+                  <span className="text-gray-300 text-sm tabular-nums text-right">{number.format(m.killFame || 0)}</span>
+                  <span className="text-gray-400 text-sm tabular-nums text-right">{number.format(m.deathFame || 0)}</span>
+                  <span className="text-gray-300 text-sm tabular-nums text-right">
+                    {m.lostValue > 0 ? <span className="text-amber-400/80">{silver(m.lostValue)}</span> : '—'}
+                  </span>
+                </button>
+
+                {/* Mobile card — same data with inline labels so nothing is ambiguous */}
+                <button
+                  onClick={() => setOpenId(open ? null : m.memberId)}
+                  disabled={m.drops.length === 0}
+                  className="md:hidden w-full px-4 py-3 text-left hover:bg-white/5 transition-colors disabled:cursor-default"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-white font-bold text-sm truncate flex items-center gap-2">
+                      {m.name}
+                      {m.drops.length > 0 && <span className="text-gray-600 text-xs">▾</span>}
+                    </span>
+                    <span className="text-gray-600 text-[10px] font-normal uppercase tracking-widest flex-shrink-0">IP {m.averageItemPower}</span>
+                  </div>
+                  <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                    <MobileStat label="Kills" value={m.kills} cls="text-green-400" />
+                    <MobileStat label="Deaths" value={m.deaths} cls="text-red-400" />
+                    <MobileStat label="Kill fame" value={number.format(m.killFame || 0)} cls="text-gray-300" />
+                    <MobileStat label="Death fame" value={number.format(m.deathFame || 0)} cls="text-gray-400" />
+                    <MobileStat label="Loot lost" value={m.lostValue > 0 ? silver(m.lostValue) : '—'} cls="text-amber-400/80" />
+                  </div>
+                </button>
+
+                {open && m.drops.length > 0 && (
+                  <div className="px-4 md:px-5 pb-4">
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Items dropped ({m.drops.length})</p>
+                    <DropGrid drops={m.drops} />
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 

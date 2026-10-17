@@ -20,6 +20,7 @@ const EMPTY_FORM = {
   militaryChannelId: '',
   botCommandsChannelId: '',
   killFeedChannelId: '',
+  announcementsChannelId: '',
 };
 
 // Dashboard views — shared by the desktop sidebar and the mobile bottom bar.
@@ -38,6 +39,7 @@ const formFromSettings = (settings) => ({
   militaryChannelId: settings?.militaryChannelId || '',
   botCommandsChannelId: settings?.botCommandsChannelId || '',
   killFeedChannelId: settings?.killFeedChannelId || '',
+  announcementsChannelId: settings?.announcementsChannelId || '',
 });
 
 const guildIconUrl = (guild) =>
@@ -193,7 +195,7 @@ const Dashboard = () => {
 
   if (!loggedIn) return <Navigate to="/login" replace />;
 
-  const allChannelsChosen = CHANNEL_FIELDS.every((f) => form[f.key]);
+  const allChannelsChosen = CHANNEL_FIELDS.filter((f) => !f.optional).every((f) => form[f.key]);
 
   const avatarUrl = user?.avatar
     ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`
@@ -416,7 +418,10 @@ const Dashboard = () => {
                       {CHANNEL_FIELDS.map((field, i) => (
                         <div key={field.key}>
                           <label className="block text-gray-300 text-xs font-bold uppercase tracking-widest mb-1.5">
-                            <span className="text-[#e62b1e]">{i + 1}.</span> {field.label}
+                            <span className="text-[#e62b1e]">{field.optional ? '+' : `${i + 1}.`}</span> {field.label}
+                            {field.optional && (
+                              <span className="ml-2 text-[10px] font-bold text-gray-500 border border-white/10 rounded px-1.5 py-0.5 normal-case">optional</span>
+                            )}
                           </label>
                           <select
                             value={form[field.key]}
@@ -424,7 +429,7 @@ const Dashboard = () => {
                             disabled={channelsLoading}
                             className="w-full bg-[#030303] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#e62b1e] transition-colors disabled:opacity-50"
                           >
-                            <option value="">Select a channel…</option>
+                            <option value="">{field.optional ? 'None' : 'Select a channel…'}</option>
                             {channels.map((c) => (
                               <option key={c.id} value={c.id}>#{c.name}</option>
                             ))}
