@@ -1,0 +1,21 @@
+{
+  "dev": {
+    "apiUrl": "http://localhost:3009",
+    "frontendUrl": "http://localhost:5173",
+    "port": 3009
+  },
+  "prod": {
+    "apiUrl": "https://api.albioner.cc",
+    "frontendUrl": "https://albioner.cc",
+    "port": 3009
+  },
+  "discord": {
+    "clientId": "1559194254742388756",
+    "scope": "identify guilds guilds.members.read"
+  },
+  "billing": {
+    "autoActivate": true,
+    "trialDays": 30,
+    "defaultPlanTier": "Plan_8"
+  }
+}
