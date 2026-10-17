@@ -1,7 +1,7 @@
 // قم بتعديل مسار الصورة حسب مكانها في مشروعك
 
 // رابط حساب الديسكورد الخاص بالمطوّر (يُستخدم في زر "Programmer" بالأسفل).
-const DISCORD_PROFILE = 'https://discord.com/users/1al_badry';
+const DISCORD_PROFILE = 'https://discord.com/users/1342957056403181701';
 
 const Hero = () => {
   return (
@@ -24,7 +24,7 @@ const Hero = () => {
         <div className="mt-4 lg:mt-8 ml-2 lg:ml-12 transform -rotate-2">
           <span 
             className="text-white text-4xl lg:text-6xl tracking-wide" 
-            style={{ fontFamily: "'Brush Script MT', 'Caveat', cursive" }}
+            style={{ fontFamily: "'Caveat', 'Segoe UI', cursive" }}
           >
             Free Bot ©
           </span>
