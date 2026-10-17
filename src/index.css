@@ -12,6 +12,35 @@ html[dir="rtl"] {
   font-family: 'Cairo', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+/* Themed scrollbars to match the dark UI (webkit + Firefox) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #e62b1e #0a0a0a;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0a0a0a;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #e62b1e;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #ff3d2e;
+}
+
+*::-webkit-scrollbar-corner {
+  background: #0a0a0a;
+}
+
 /* Ensure common text elements inherit the RTL font */
 html[dir="rtl"] body,
 html[dir="rtl"] h1,

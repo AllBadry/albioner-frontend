@@ -10,6 +10,17 @@ const Tutorial = () => {
     { id: 'verification', title: t('tutorial.tabs.verification') },
     { id: 'commands', title: t('tutorial.tabs.commands') },
     { id: 'auto', title: t('tutorial.tabs.auto') },
+    { id: 'web', title: t('tutorial.tabs.web') },
+  ];
+
+  const webBlocks = [
+    { title: t('tutorial.web.loginTitle'), body: t('tutorial.web.loginBody') },
+    { title: t('tutorial.web.setupTitle'), body: t('tutorial.web.setupBody') },
+    { title: t('tutorial.web.killsTitle'), body: t('tutorial.web.killsBody') },
+    { title: t('tutorial.web.militaryTitle'), body: t('tutorial.web.militaryBody') },
+    { title: t('tutorial.web.economyTitle'), body: t('tutorial.web.economyBody') },
+    { title: t('tutorial.web.membersTitle'), body: t('tutorial.web.membersBody') },
+    { title: t('tutorial.web.inboxTitle'), body: t('tutorial.web.inboxBody') },
   ];
 
   const setupBlocks = [
@@ -160,6 +171,23 @@ const Tutorial = () => {
                   <div key={i} className="bg-[#030303] p-5 rounded-lg border border-white/5">
                     <h4 className="text-white font-bold mb-2">{card.title}</h4>
                     <p className="text-sm text-gray-400">{card.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Web Dashboard */}
+          {activeTab === 'web' && (
+            <div className="animate-fade-in space-y-8">
+              <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.web.title')}</h3>
+              <p>{t('tutorial.web.intro')}</p>
+
+              <div className="space-y-4 max-h-[520px] overflow-y-auto pe-2">
+                {webBlocks.map((block, i) => (
+                  <div key={i} className="bg-[#030303] p-5 rounded-lg border border-white/5">
+                    <h4 className="text-[#e62b1e] font-bold mb-2">{block.title}</h4>
+                    <p className="text-sm text-gray-400">{block.body}</p>
                   </div>
                 ))}
               </div>

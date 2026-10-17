@@ -102,8 +102,9 @@ export default {
     tabs: {
       setup: '🚀 Initial Setup',
       verification: '🔒 Verification',
-      commands: '💻 Commands',
+      commands: '💻 Command Guide',
       auto: '🤖 Automatic Features',
+      web: '🌐 Web Dashboard',
     },
     setup: {
       title: 'Initial Server Setup',
@@ -179,6 +180,32 @@ export default {
       c6title: '🧹 Auto-kicker',
       c6desc:
         'Periodically removes the role from members who left the alliance in-game and DMs them.',
+    },
+    web: {
+      title: 'Web Dashboard Guide',
+      intro:
+        'The Albioner website mirrors the bot: log in with Discord, pick a server you admin, and manage everything from your browser. No commands needed.',
+      loginTitle: '1. Log in',
+      loginBody:
+        'Click "Login" in the navbar and authorize with Discord. You will only see servers where you have Administrator permission.',
+      setupTitle: '2. Server Setup tab',
+      setupBody:
+        'Pick the tracked Albion guild name, the announcement channel, and the military channel. This is the same data the bot uses.',
+      killsTitle: '3. Kill Watcher tab',
+      killsBody:
+        'Live kills and deaths for your tracked guild, with gear values and a "wrong name" warning if the saved name is not a real Albion guild.',
+      militaryTitle: '4. Military tab',
+      militaryBody:
+        'Latest battle auto-detected for your guild, full battle history, per-player breakdown, CTA audits, and timers. Refresh any time.',
+      economyTitle: '5. Economy tab',
+      economyBody:
+        'Tax, laborer, trade, market charts, refining calculator, and alliance chest audit — all in one place.',
+      membersTitle: '6. Members tab',
+      membersBody:
+        'Synced guild roster with kills, deaths, and loot dropped per member.',
+      inboxTitle: '7. Inbox tab',
+      inboxBody:
+        'Review join applications and regear requests submitted through Discord, right from the web.',
     },
   },
 
