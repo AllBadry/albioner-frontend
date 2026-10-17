@@ -5,21 +5,23 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { apiFetch } from '../api';
-import { number, timeAgo, silver } from '../utils/format';
+import { number } from '../utils/format';
+import { useI18n } from '../i18n';
 import KillDetail from './KillDetail';
 
 const KillRow = ({ kill, onOpen }) => {
-  const accent = kill.victory ? 'border-l-green-500' : 'border-l-red-500';
+  const { t, silver, timeAgo } = useI18n();
+  const accent = kill.victory ? 'border-s-green-500' : 'border-s-red-500';
   return (
-    <div className={`bg-[#0a0a0a] border border-white/10 ${accent} border-l-4 rounded-xl p-4`}>
+    <div className={`bg-[#0a0a0a] border border-white/10 ${accent} border-s-4 rounded-xl p-4`}>
       <div className="flex items-center gap-2 mb-3">
         <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${
           kill.victory ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'
         }`}>
-          {kill.victory ? 'Victory' : 'Loss'}
+          {kill.victory ? t('kills.victory') : t('kills.loss')}
         </span>
         <span className="text-gray-600 text-xs">{kill.region}</span>
-        <span className="text-gray-600 text-xs ml-auto">{timeAgo(kill.timeStamp)}</span>
+        <span className="text-gray-600 text-xs ms-auto">{timeAgo(kill.timeStamp)}</span>
       </div>
 
       <div className="flex items-center gap-3">
@@ -40,9 +42,14 @@ const KillRow = ({ kill, onOpen }) => {
             <span className="text-gray-500"> {kill.victim.guild ? `[${kill.victim.guild}]` : ''}</span>
           </p>
           <p className="text-gray-500 text-xs mt-1">
-            IP {kill.killer.ip} vs {kill.victim.ip} · {kill.participants} player(s) · {number.format(kill.fame)} fame
+            {t('kills.rowMeta', {
+              ki: kill.killer.ip,
+              vi: kill.victim.ip,
+              players: kill.participants,
+              fame: number.format(kill.fame),
+            })}
             {kill.victim.gearValue > 0 && (
-              <span className="text-amber-400/80"> · {silver(kill.victim.gearValue)} lost</span>
+              <span className="text-amber-400/80"> · {t('kills.lost', { silver: silver(kill.victim.gearValue) })}</span>
             )}
           </p>
         </div>
@@ -50,7 +57,7 @@ const KillRow = ({ kill, onOpen }) => {
           onClick={() => onOpen(kill)}
           className="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest flex-shrink-0"
         >
-          Open
+          {t('kills.open')}
         </button>
       </div>
     </div>
@@ -58,6 +65,7 @@ const KillRow = ({ kill, onOpen }) => {
 };
 
 const KillWatcher = ({ guild }) => {
+  const { t, timeAgo } = useI18n();
   const configured = Boolean(guild?.settings?.allianceName && guild.settings.allianceName !== 'None');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -100,10 +108,8 @@ const KillWatcher = ({ guild }) => {
     return (
       <div className="flex flex-col items-center justify-center text-center py-28 border border-dashed border-white/10 rounded-2xl">
         <div className="text-5xl mb-4 opacity-40">⚔️</div>
-        <h2 className="text-white font-black uppercase tracking-widest mb-2">Kill Watcher</h2>
-        <p className="text-gray-500 text-sm max-w-md">
-          Set the guild name in <span className="text-white">Server Setup</span> first — the watcher turns on automatically once a guild is chosen.
-        </p>
+        <h2 className="text-white font-black uppercase tracking-widest mb-2">{t('kills.notConfiguredTitle')}</h2>
+        <p className="text-gray-500 text-sm max-w-md">{t('kills.notConfiguredBody')}</p>
       </div>
     );
   }
@@ -116,10 +122,10 @@ const KillWatcher = ({ guild }) => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex-1 min-w-0">
-          <h1 className="text-white font-black uppercase tracking-tighter text-2xl lg:text-3xl">Kill Watcher</h1>
+          <h1 className="text-white font-black uppercase tracking-tighter text-2xl lg:text-3xl">{t('kills.notConfiguredTitle')}</h1>
           <p className="text-gray-500 text-sm">
-            Tracking <span className="text-[#e62b1e] font-bold">{data?.guildName || guild.settings.allianceName}</span>
-            {updatedAt && <span className="text-gray-600"> · updated {timeAgo(updatedAt)}</span>}
+            {t('kills.tracking')} <span className="text-[#e62b1e] font-bold">{data?.guildName || guild.settings.allianceName}</span>
+            {updatedAt && <span className="text-gray-600"> · {t('kills.updated', { time: timeAgo(updatedAt) })}</span>}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -129,7 +135,7 @@ const KillWatcher = ({ guild }) => {
             onClick={load}
             className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
           >
-            Refresh
+            {t('common.refresh')}
           </button>
         </div>
       </div>
@@ -140,27 +146,26 @@ const KillWatcher = ({ guild }) => {
 
       {data?.unresolved && (
         <div className="bg-amber-950/20 border border-amber-500/30 rounded-xl px-4 py-3 text-amber-300 text-sm">
-          <span className="font-bold">"{data.guildName}" is not an Albion guild.</span>{' '}
-          Open <span className="text-white">Server Setup</span> and enter the exact in-game guild
-          name (not the alliance) — the radar starts working as soon as it is saved.
+          <span className="font-bold">{t('kills.notGuildTitle', { name: data.guildName })}</span>{' '}
+          {t('kills.notGuildBody')}
         </div>
       )}
 
-      {loading && !data && <p className="text-gray-500 text-sm">Loading kills…</p>}
+      {loading && !data && <p className="text-gray-500 text-sm">{t('kills.loadingKills')}</p>}
 
       {!loading && kills.length === 0 && !data?.unresolved && (
         <div className="flex flex-col items-center justify-center text-center py-24 border border-dashed border-white/10 rounded-xl">
           <div className="text-5xl mb-4 opacity-40">🕓</div>
-          <h3 className="text-white font-bold uppercase tracking-widest mb-2">No recent activity</h3>
-          <p className="text-gray-500 text-sm max-w-md">No kills or deaths for this guild in the latest Albion events. This page refreshes every 10 seconds.</p>
+          <h3 className="text-white font-bold uppercase tracking-widest mb-2">{t('kills.noActivityTitle')}</h3>
+          <p className="text-gray-500 text-sm max-w-md">{t('kills.noActivityBody')}</p>
         </div>
       )}
 
       {!loading && kills.length === 0 && data?.unresolved && (
         <div className="flex flex-col items-center justify-center text-center py-24 border border-dashed border-white/10 rounded-xl">
           <div className="text-5xl mb-4 opacity-40">🧭</div>
-          <h3 className="text-white font-bold uppercase tracking-widest mb-2">Waiting for a real guild name</h3>
-          <p className="text-gray-500 text-sm max-w-md">Once the correct Albion guild is saved, kills and deaths show up here automatically.</p>
+          <h3 className="text-white font-bold uppercase tracking-widest mb-2">{t('kills.waitingTitle')}</h3>
+          <p className="text-gray-500 text-sm max-w-md">{t('kills.waitingBody')}</p>
         </div>
       )}
 

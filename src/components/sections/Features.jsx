@@ -1,5 +1,9 @@
 
+import { useI18n } from '../../i18n';
+
 const Features = () => {
+  const { t } = useI18n();
+
   return (
     <section className="relative w-full min-h-screen bg-[#030303] flex flex-col items-center px-6 lg:px-16 pt-32 pb-20 animate-fade-in overflow-hidden">
       
@@ -9,7 +13,7 @@ const Features = () => {
       {/* Header */}
       <div className="w-full max-w-7xl mb-12 animate-slide-up flex flex-col items-start">
         <h2 className="text-white font-black uppercase leading-[0.9] tracking-tighter text-[50px] sm:text-[70px] flex items-center gap-6">
-          FEATURES
+          {t('features.heading')}
           {/* خط التصميم بجانب الكلمة كما في الصورة المرجعية */}
           <span className="h-2 w-32 md:w-96 bg-[#333] rounded-full block mt-2"></span>
         </h2>
@@ -30,10 +34,10 @@ const Features = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/40 to-transparent"></div>
           <div className="absolute bottom-0 left-0 p-8">
-            <p className="text-[#e62b1e] text-xs font-bold tracking-widest uppercase mb-2">01 // Analytics</p>
-            <h3 className="text-white text-4xl font-black uppercase tracking-tighter mb-3">Economy Insights</h3>
+            <p className="text-[#e62b1e] text-xs font-bold tracking-widest uppercase mb-2">{t('features.c1kicker')}</p>
+            <h3 className="text-white text-4xl font-black uppercase tracking-tighter mb-3">{t('features.c1title')}</h3>
             <p className="text-gray-300 text-sm font-medium leading-relaxed max-w-xs">
-              Smart, real-time analysis of in-game economy and market prices to help your alliance make sound financial decisions.
+              {t('features.c1desc')}
             </p>
           </div>
         </div>
@@ -47,10 +51,10 @@ const Features = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/40 to-transparent"></div>
           <div className="absolute bottom-0 left-0 p-8">
-            <p className="text-[#e62b1e] text-xs font-bold tracking-widest uppercase mb-2">02 // Combat</p>
-            <h3 className="text-white text-4xl font-black uppercase tracking-tighter mb-3">ZvZ Tracking</h3>
+            <p className="text-[#e62b1e] text-xs font-bold tracking-widest uppercase mb-2">{t('features.c2kicker')}</p>
+            <h3 className="text-white text-4xl font-black uppercase tracking-tighter mb-3">{t('features.c2title')}</h3>
             <p className="text-gray-300 text-sm font-medium leading-relaxed max-w-xs">
-              Massive scale battle tracking, killboards, and attendance radar to manage your forces effectively.
+              {t('features.c2desc')}
             </p>
           </div>
         </div>
@@ -67,10 +71,10 @@ const Features = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/40 to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-6">
-              <p className="text-[#e62b1e] text-xs font-bold tracking-widest uppercase mb-2">03 // Stealth</p>
-              <h3 className="text-white text-2xl font-black uppercase tracking-tighter mb-2">Scouting Intel</h3>
+              <p className="text-[#e62b1e] text-xs font-bold tracking-widest uppercase mb-2">{t('features.c3kicker')}</p>
+              <h3 className="text-white text-2xl font-black uppercase tracking-tighter mb-2">{t('features.c3title')}</h3>
               <p className="text-gray-300 text-sm font-medium leading-relaxed">
-                Track enemy movements and compositions to stay one step ahead.
+                {t('features.c3desc')}
               </p>
             </div>
           </div>
@@ -84,10 +88,10 @@ const Features = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/40 to-transparent"></div>
             <div className="absolute bottom-0 left-0 p-6">
-              <p className="text-[#e62b1e] text-xs font-bold tracking-widest uppercase mb-2">04 // Logistics</p>
-              <h3 className="text-white text-2xl font-black uppercase tracking-tighter mb-2">Auto Regear</h3>
+              <p className="text-[#e62b1e] text-xs font-bold tracking-widest uppercase mb-2">{t('features.c4kicker')}</p>
+              <h3 className="text-white text-2xl font-black uppercase tracking-tighter mb-2">{t('features.c4title')}</h3>
               <p className="text-gray-300 text-sm font-medium leading-relaxed">
-                A single-click gear compensation system for your entire alliance.
+                {t('features.c4desc')}
               </p>
             </div>
           </div>

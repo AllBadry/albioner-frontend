@@ -52,33 +52,13 @@ export function buildBotInviteUrl(guildId) {
 }
 
 // The specialized channels a server configures, in the order the dashboard asks
-// for them (admin → military → economy → kill feed). `key` matches the
-// GuildSettings field name; see src/config/channelsConfig.js on the backend.
+// for them (admin → military → economy → kill feed → announcements). `key`
+// matches the GuildSettings field name; labels and hints are localized and live
+// under the `channels.<key>` namespace in client/src/i18n/locales/*.
 export const CHANNEL_FIELDS = [
-  {
-    key: 'adminChannelId',
-    label: 'Admin',
-    hint: 'Dashboard panel, verification tickets, scout, inactivity report, language.',
-  },
-  {
-    key: 'militaryChannelId',
-    label: 'Military',
-    hint: 'CTA, battle report, CTA audit, timers board.',
-  },
-  {
-    key: 'botCommandsChannelId',
-    label: 'Economy',
-    hint: 'Price comparison, market chart, tax & refining calculators, chest audit.',
-  },
-  {
-    key: 'killFeedChannelId',
-    label: 'Kill Feed',
-    hint: 'Live kills and gank / battle alerts.',
-  },
-  {
-    key: 'announcementsChannelId',
-    label: 'Announcements',
-    hint: 'Optional — posts "X was accepted" for approved join requests with a mention.',
-    optional: true,
-  },
+  { key: 'adminChannelId' },
+  { key: 'militaryChannelId' },
+  { key: 'botCommandsChannelId' },
+  { key: 'killFeedChannelId' },
+  { key: 'announcementsChannelId', optional: true },
 ];

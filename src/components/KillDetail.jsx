@@ -6,7 +6,8 @@
 // The "Albion killboard" link stays there as the fallback.
 
 import { useEffect } from 'react';
-import { number, timeAgo, fullTime, silver, itemImage } from '../utils/format';
+import { number, fullTime, itemImage } from '../utils/format';
+import { useI18n } from '../i18n';
 
 // One equipped item icon (+ a xN badge when stacked).
 const ItemCell = ({ item }) => (
@@ -19,7 +20,7 @@ const ItemCell = ({ item }) => (
       onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
     />
     {item.count > 1 && (
-      <span className="absolute -bottom-1 -right-1 text-[10px] font-bold bg-[#e62b1e] text-white rounded-full px-1.5 leading-4">
+      <span className="absolute -bottom-1 -end-1 text-[10px] font-bold bg-[#e62b1e] text-white rounded-full px-1.5 leading-4">
         {item.count}
       </span>
     )}
@@ -40,14 +41,17 @@ const ItemGrid = ({ label, items, empty }) => (
 );
 
 const Fighter = ({ side, role, victory }) => {
-  const tag = side.guild || side.alliance || 'no guild';
+  const { t } = useI18n();
+  const tag = side.guild || side.alliance || t('common.noGuild');
   const color = role === 'killer'
     ? (victory ? 'text-green-400' : 'text-gray-400')
     : (victory ? 'text-gray-400' : 'text-red-400');
   return (
     <div className="flex-1 min-w-0">
-      <span className={`text-[10px] font-bold uppercase tracking-widest ${color}`}>{role}</span>
-      <p className="text-white font-bold truncate mt-1">{side.name || 'Unknown'}</p>
+      <span className={`text-[10px] font-bold uppercase tracking-widest ${color}`}>
+        {role === 'killer' ? t('killDetail.killer') : t('killDetail.victim')}
+      </span>
+      <p className="text-white font-bold truncate mt-1">{side.name || t('common.unknown')}</p>
       <p className="text-gray-500 text-xs truncate">{tag}</p>
       <p className="text-gray-600 text-xs mt-1">IP {side.ip || 0}</p>
     </div>
@@ -55,6 +59,7 @@ const Fighter = ({ side, role, victory }) => {
 };
 
 const KillDetail = ({ kill, onClose }) => {
+  const { t, silver, timeAgo } = useI18n();
   // Escape closes the popup, and the page behind it is frozen while it is open.
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -80,8 +85,8 @@ const KillDetail = ({ kill, onClose }) => {
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-white text-xl leading-none"
-          aria-label="Close"
+          className="absolute top-4 end-4 text-gray-500 hover:text-white text-xl leading-none"
+          aria-label={t('common.close')}
         >
           ×
         </button>
@@ -90,10 +95,10 @@ const KillDetail = ({ kill, onClose }) => {
           <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full ${
             victory ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400'
           }`}>
-            {victory ? 'Victory' : 'Loss'}
+            {victory ? t('kills.victory') : t('kills.loss')}
           </span>
           <span className="text-gray-600 text-xs">{kill.region}</span>
-          <span className="text-gray-600 text-xs ml-auto pr-6" title={fullTime(kill.timeStamp)}>
+          <span className="text-gray-600 text-xs ms-auto pe-6" title={fullTime(kill.timeStamp)}>
             {timeAgo(kill.timeStamp)}
           </span>
         </div>
@@ -106,29 +111,29 @@ const KillDetail = ({ kill, onClose }) => {
 
         <div className="grid grid-cols-3 gap-3 mb-5">
           <div className="bg-black/30 border border-white/5 rounded-xl p-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Fame</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">{t('killDetail.fame')}</p>
             <p className="text-white font-bold">{number.format(kill.fame || 0)}</p>
           </div>
           <div className="bg-black/30 border border-white/5 rounded-xl p-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Participants</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">{t('killDetail.participants')}</p>
             <p className="text-white font-bold">{kill.participants || 1}</p>
           </div>
           <div className="bg-black/30 border border-white/5 rounded-xl p-3">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Loot</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500">{t('killDetail.loot')}</p>
             <p className="text-white font-bold">{silver(kill.victim?.gearValue)}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
           <ItemGrid
-            label={`Fell from ${kill.victim?.name || 'the victim'}`}
+            label={kill.victim?.name ? t('killDetail.fellFrom', { name: kill.victim.name }) : t('killDetail.fellFromFallback')}
             items={kill.victim?.equipment}
-            empty="No item data recorded for this kill."
+            empty={t('killDetail.noItems')}
           />
           <ItemGrid
-            label={`${kill.killer?.name || 'The killer'}'s loadout`}
+            label={kill.killer?.name ? t('killDetail.loadout', { name: kill.killer.name }) : t('killDetail.loadoutFallback')}
             items={kill.killer?.equipment}
-            empty="No item data recorded for this kill."
+            empty={t('killDetail.noItems')}
           />
         </div>
 
@@ -138,7 +143,7 @@ const KillDetail = ({ kill, onClose }) => {
           rel="noopener noreferrer"
           className="block text-center w-full px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
         >
-          Open on Albion killboard
+          {t('killDetail.openOnKillboard')}
         </a>
       </div>
     </div>

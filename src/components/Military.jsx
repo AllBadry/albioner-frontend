@@ -7,19 +7,13 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { apiFetch } from '../api';
-import { number, timeAgo, silver, itemImage } from '../utils/format';
+import { number, itemImage } from '../utils/format';
+import { useI18n } from '../i18n';
 import { fetchBattleReport, peekBattleReport } from '../utils/battleCache';
 import { getSelectedBattle, setSelectedBattle } from '../utils/selectedBattle';
 import Regear from './Regear';
 
 const TYPE_ICON = { castle: '🏰', territory: '⚔️', hideout: '🛡️' };
-const TIMER_TYPES = [
-  { value: 'castle', label: '🏰 Castle' },
-  { value: 'territory', label: '⚔️ Territory' },
-  { value: 'hideout', label: '🛡️ Hideout' },
-];
-
-const fame = new Intl.NumberFormat('en-US');
 
 // Ranking column used by the Battle Report tab (defined at module scope so it is
 // not re-created on every render).
@@ -32,7 +26,7 @@ const ReportColumn = ({ title, rows }) => (
         <li key={r.name} className="flex items-center gap-2 text-sm">
           <span className="text-[#e62b1e] font-bold w-4">{i + 1}</span>
           <span className="text-white flex-1 truncate">{r.name}</span>
-          <span className="text-gray-400 tabular-nums">{fame.format(r.value)}</span>
+          <span className="text-gray-400 tabular-nums">{number.format(r.value)}</span>
         </li>
       ))}
     </ol>
@@ -68,6 +62,7 @@ const Stat = ({ label, value, cls }) => (
 // 🔍 One player's battle card: everything he killed (with the victims' gear) and
 // everything that dropped from him (his own gear on each death).
 const PlayerModal = ({ player, region, battleId, onClose }) => {
+  const { t, silver } = useI18n();
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
@@ -88,39 +83,39 @@ const PlayerModal = ({ player, region, battleId, onClose }) => {
         className="relative w-full max-w-2xl my-8 bg-[#0a0a0a] border border-white/10 rounded-2xl p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-white text-xl leading-none" aria-label="Close">✕</button>
+        <button onClick={onClose} className="absolute top-4 end-4 text-gray-500 hover:text-white text-xl leading-none" aria-label={t('common.close')}>✕</button>
 
         <div className="mb-5">
           <p className="text-white font-bold text-lg">{player.name}</p>
           <p className="text-gray-500 text-xs">
-            {player.guildName || 'no guild'} · IP {player.averageItemPower}
+            {player.guildName || t('common.noGuild')} · IP {player.averageItemPower}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-6 mb-5">
-          <Stat label="⚔️ Kills" value={player.kills} cls="text-green-400" />
-          <Stat label="💀 Deaths" value={player.deaths} cls="text-red-400" />
-          <Stat label="Kill fame" value={number.format(player.killFame)} cls="text-gray-200" />
-          <Stat label="Gear destroyed" value={silver(player.destroyedValue || 0)} cls="text-green-400/80" />
-          <Stat label="Gear dropped" value={silver(player.lostValue || 0)} cls="text-red-400/80" />
-          <span className="text-gray-600 text-xs sm:ml-auto">Battle #{battleId}{region ? ` · ${region}` : ''}</span>
+          <Stat label={t('military.battle.kills')} value={player.kills} cls="text-green-400" />
+          <Stat label={t('military.battle.deaths')} value={player.deaths} cls="text-red-400" />
+          <Stat label={t('military.battle.killFame')} value={number.format(player.killFame)} cls="text-gray-200" />
+          <Stat label={t('military.battle.gearDestroyed')} value={silver(player.destroyedValue || 0)} cls="text-green-400/80" />
+          <Stat label={t('military.battle.gearDropped')} value={silver(player.lostValue || 0)} cls="text-red-400/80" />
+          <span className="text-gray-600 text-xs sm:ms-auto">{t('military.battle.battleNo', { id: battleId })}{region ? ` · ${region}` : ''}</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <h4 className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">
-              Killed — gear destroyed ({player.killed.length})
+              {t('military.battle.killedTitle', { n: player.killed.length })}
             </h4>
             {player.killed.length === 0 ? (
-              <p className="text-gray-600 text-sm">No kills in this battle.</p>
+              <p className="text-gray-600 text-sm">{t('military.battle.noKills')}</p>
             ) : (
               <div className="space-y-3">
                 {player.killed.map((k, i) => (
                   <div key={i} className="bg-[#030303] border border-white/5 rounded-xl p-3">
                     <div className="flex items-center gap-2 mb-2">
                       <p className="text-white text-sm font-bold truncate">{k.name}</p>
-                      <span className="text-gray-500 text-[11px]">{k.guildName || 'no guild'}</span>
-                      <span className="ml-auto text-green-400/80 text-xs font-bold tabular-nums">{silver(k.value || 0)}</span>
+                      <span className="text-gray-500 text-[11px]">{k.guildName || t('common.noGuild')}</span>
+                      <span className="ms-auto text-green-400/80 text-xs font-bold tabular-nums">{silver(k.value || 0)}</span>
                     </div>
                     <GearIcons items={k.equipment} />
                   </div>
@@ -131,10 +126,10 @@ const PlayerModal = ({ player, region, battleId, onClose }) => {
 
           <div>
             <h4 className="text-red-400 text-xs font-bold uppercase tracking-widest mb-3">
-              Died — what dropped ({player.died.length})
+              {t('military.battle.diedTitle', { n: player.died.length })}
             </h4>
             {player.died.length === 0 ? (
-              <p className="text-gray-600 text-sm">Never died in this battle.</p>
+              <p className="text-gray-600 text-sm">{t('military.battle.neverDied')}</p>
             ) : (
               <div className="space-y-3">
                 {player.died.map((d, i) => (
@@ -142,10 +137,10 @@ const PlayerModal = ({ player, region, battleId, onClose }) => {
                     <div className="flex items-center gap-2 mb-2">
                       {d.killerName && (
                         <p className="text-gray-500 text-[11px]">
-                          Killed by <span className="text-white font-bold">{d.killerName}</span>
+                          {t('military.battle.killedBy', { name: d.killerName })}
                         </p>
                       )}
-                      <span className="ml-auto text-red-400/80 text-xs font-bold tabular-nums">{silver(d.value || 0)}</span>
+                      <span className="ms-auto text-red-400/80 text-xs font-bold tabular-nums">{silver(d.value || 0)}</span>
                     </div>
                     <GearIcons items={d.equipment} />
                   </div>
@@ -161,6 +156,7 @@ const PlayerModal = ({ player, region, battleId, onClose }) => {
 
 // 📋 Every player in a selected battle, with a View button per player.
 const BattlePlayers = ({ players, region, battleId }) => {
+  const { t, silver } = useI18n();
   const [q, setQ] = useState('');
   const [selected, setSelected] = useState(null);
 
@@ -174,14 +170,14 @@ const BattlePlayers = ({ players, region, battleId }) => {
     <div className="space-y-4">
       <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-4">
         <div className="flex flex-wrap items-center gap-3">
-          <h3 className="text-white font-bold uppercase tracking-widest">Players in this battle</h3>
-          <span className="text-gray-500 text-xs">{players.length} players</span>
+          <h3 className="text-white font-bold uppercase tracking-widest">{t('military.battle.playersTitle')}</h3>
+          <span className="text-gray-500 text-xs">{t('military.battle.playersCount', { n: players.length })}</span>
           <input
             type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search player or guild…"
-            className="ml-auto bg-[#030303] border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#e62b1e] transition-colors"
+            placeholder={t('military.battle.searchPlayer')}
+            className="ms-auto bg-[#030303] border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#e62b1e] transition-colors"
           />
         </div>
 
@@ -189,12 +185,12 @@ const BattlePlayers = ({ players, region, battleId }) => {
           <table className="w-full">
             <thead>
               <tr className="text-gray-500 text-xs font-bold uppercase tracking-widest border-b border-white/10">
-                <th className="text-left py-2.5 font-bold">Player</th>
-                <th className="text-right py-2.5 font-bold">Kills</th>
-                <th className="text-right py-2.5 font-bold">Deaths</th>
-                <th className="text-right py-2.5 font-bold">Fame</th>
-                <th className="text-right py-2.5 font-bold">Gear lost</th>
-                <th className="text-right py-2.5"></th>
+                <th className="text-start py-2.5 font-bold">{t('common.player')}</th>
+                <th className="text-end py-2.5 font-bold">{t('common.kills')}</th>
+                <th className="text-end py-2.5 font-bold">{t('common.deaths')}</th>
+                <th className="text-end py-2.5 font-bold">{t('common.fame')}</th>
+                <th className="text-end py-2.5 font-bold">{t('military.battle.gearLost')}</th>
+                <th className="text-end py-2.5"></th>
               </tr>
             </thead>
             <tbody>
@@ -202,24 +198,18 @@ const BattlePlayers = ({ players, region, battleId }) => {
                 <tr key={p.id || p.name} className="border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors">
                   <td className="py-2.5">
                     <span className="text-white font-bold text-sm">{p.name}</span>
-                    {p.guildName && <span className="text-gray-600 text-xs ml-2">{p.guildName}</span>}
+                    {p.guildName && <span className="text-gray-600 text-xs ms-2">{p.guildName}</span>}
                   </td>
-                  <td className="text-right text-green-400 font-bold tabular-nums">{p.kills}</td>
-                  <td className="text-right text-red-400 font-bold tabular-nums">{p.deaths}</td>
-                  <td className="text-right text-gray-300 tabular-nums">{number.format(p.killFame)}</td>
-                  <td className="text-right text-amber-400/80 tabular-nums">{p.lostValue ? silver(p.lostValue) : '—'}</td>
-                  <td className="text-right">
+                  <td className="text-end text-green-400 font-bold tabular-nums">{p.kills}</td>
+                  <td className="text-end text-red-400 font-bold tabular-nums">{p.deaths}</td>
+                  <td className="text-end text-gray-300 tabular-nums">{number.format(p.killFame)}</td>
+                  <td className="text-end text-amber-400/80 tabular-nums">{p.lostValue ? silver(p.lostValue) : '—'}</td>
+                  <td className="text-end">
                     <button
                       onClick={() => setSelected(p)}
                       className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
                     >
-                      View
-          </button>
-                    <button
-                      onClick={() => setSelected(p)}
-                      className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
-                    >
-                      View
+                      {t('military.battle.view')}
                     </button>
                   </td>
                 </tr>
@@ -236,13 +226,13 @@ const BattlePlayers = ({ players, region, battleId }) => {
   );
 };
 
-function remaining(eventTime) {
+function remaining(t, eventTime) {
   const diff = new Date(eventTime).getTime() - Date.now();
-  if (diff <= 0) return 'now';
+  if (diff <= 0) return t('military.remaining.now');
   const h = Math.floor(diff / 3600000);
   const m = Math.floor((diff % 3600000) / 60000);
-  if (h > 0) return `in ${h}h ${m}m`;
-  return `in ${m}m`;
+  if (h > 0) return t('military.remaining.hm', { h, m });
+  return t('military.remaining.m', { m });
 }
 
 const Field = ({ label, children }) => (
@@ -257,6 +247,12 @@ const inputCls =
 
 // ---------- Timers ----------
 function TimersTab({ guildId }) {
+  const { t } = useI18n();
+  const timerTypes = [
+    { value: 'castle', label: t('military.timers.typeCastle') },
+    { value: 'territory', label: t('military.timers.typeTerritory') },
+    { value: 'hideout', label: t('military.timers.typeHideout') },
+  ];
   const [timers, setTimers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -323,29 +319,29 @@ function TimersTab({ guildId }) {
   return (
     <div className="space-y-6">
       <form onSubmit={add} className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-5">
-        <h3 className="text-white font-bold uppercase tracking-widest">Add a timer</h3>
+        <h3 className="text-white font-bold uppercase tracking-widest">{t('military.timers.addTitle')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Field label="Type">
+          <Field label={t('military.timers.type')}>
             <select
               value={form.type}
               onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}
               className={inputCls}
             >
-              {TIMER_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
+              {timerTypes.map((tt) => (
+                <option key={tt.value} value={tt.value}>{tt.label}</option>
               ))}
             </select>
           </Field>
-          <Field label="Name / location">
+          <Field label={t('military.timers.nameLocation')}>
             <input
               type="text"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-              placeholder="e.g. Fort Sterling"
+              placeholder={t('military.timers.namePlaceholder')}
               className={inputCls}
             />
           </Field>
-          <Field label="Hours">
+          <Field label={t('military.timers.hours')}>
             <input
               type="number"
               min="0"
@@ -356,7 +352,7 @@ function TimersTab({ guildId }) {
               className={inputCls}
             />
           </Field>
-          <Field label="Minutes">
+          <Field label={t('military.timers.minutes')}>
             <input
               type="number"
               min="0"
@@ -373,7 +369,7 @@ function TimersTab({ guildId }) {
           disabled={saving || !form.name.trim()}
           className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {saving ? 'Adding…' : 'Add timer'}
+          {saving ? t('military.timers.adding') : t('military.timers.add')}
         </button>
       </form>
 
@@ -383,24 +379,24 @@ function TimersTab({ guildId }) {
 
       <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8">
         <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">
-          Active timers {loading && <span className="text-gray-600 normal-case">· loading…</span>}
+          {t('military.timers.active')} {loading && <span className="text-gray-600 normal-case">· {t('common.loading')}</span>}
         </h3>
-        {!loading && timers.length === 0 && <p className="text-gray-500 text-sm">No timers scheduled.</p>}
+        {!loading && timers.length === 0 && <p className="text-gray-500 text-sm">{t('military.timers.none')}</p>}
         <div className="space-y-2">
-          {timers.map((t) => (
-            <div key={t.id} className="flex items-center gap-3 bg-[#030303] border border-white/5 rounded-xl px-4 py-3">
-              <span className="text-lg">{TYPE_ICON[t.type] || '📌'}</span>
+          {timers.map((tm) => (
+            <div key={tm.id} className="flex items-center gap-3 bg-[#030303] border border-white/5 rounded-xl px-4 py-3">
+              <span className="text-lg">{TYPE_ICON[tm.type] || '📌'}</span>
               <div className="min-w-0 flex-1">
-                <p className="text-white text-sm font-bold truncate">{t.name}</p>
+                <p className="text-white text-sm font-bold truncate">{tm.name}</p>
                 <p className="text-gray-500 text-xs">
-                  {new Date(t.eventTime).toLocaleString()} · <span className="text-[#e62b1e]">{remaining(t.eventTime)}</span>
+                  {new Date(tm.eventTime).toLocaleString()} · <span className="text-[#e62b1e]">{remaining(t, tm.eventTime)}</span>
                 </p>
               </div>
               <button
-                onClick={() => remove(t.id)}
+                onClick={() => remove(tm.id)}
                 className="text-red-400 hover:text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg hover:bg-red-950/40 border border-white/10 transition-colors"
               >
-                Remove
+                {t('military.timers.remove')}
               </button>
             </div>
           ))}
@@ -413,47 +409,51 @@ function TimersTab({ guildId }) {
 // ---------- Battle report ----------
 // One battle rendered as a card. Shared by the auto (latest) fetch and the
 // manual ID lookup so both look identical.
-const BattleCard = ({ battle, region, ongoing }) => (
-  <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-5">
-    <div className="flex flex-wrap items-center gap-4">
-      <a
-        href={`https://albiononline.com/killboard/battles/${battle.id}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-white font-black uppercase tracking-tight hover:text-[#e62b1e]"
-      >
-        Battle {battle.id}
-      </a>
-      {ongoing && (
-        <span className="flex items-center gap-1.5 text-[#e62b1e] text-xs font-bold uppercase tracking-widest">
-          <span className="w-2 h-2 rounded-full bg-[#e62b1e] animate-pulse" />
-          Live
+const BattleCard = ({ battle, region, ongoing }) => {
+  const { t, timeAgo } = useI18n();
+  return (
+    <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-5">
+      <div className="flex flex-wrap items-center gap-4">
+        <a
+          href={`https://albiononline.com/killboard/battles/${battle.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white font-black uppercase tracking-tight hover:text-[#e62b1e]"
+        >
+          {t('military.battle.battleNo', { id: battle.id })}
+        </a>
+        {ongoing && (
+          <span className="flex items-center gap-1.5 text-[#e62b1e] text-xs font-bold uppercase tracking-widest">
+            <span className="w-2 h-2 rounded-full bg-[#e62b1e] animate-pulse" />
+            {t('common.live')}
+          </span>
+        )}
+        {region && <span className="text-gray-500 text-xs uppercase tracking-widest">{region}</span>}
+        {battle.clusterName && (
+          <span className="text-gray-500 text-xs uppercase tracking-widest">📍 {battle.clusterName}</span>
+        )}
+        <span className="text-gray-400 text-sm ms-auto">
+          {battle.playerCount} {t('common.players')} · {battle.guildCount} {t('common.guilds')} · {number.format(battle.totalKills)} {t('common.kills')} ·{' '}
+          {number.format(battle.totalFame)} {t('common.fame')}
         </span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <ReportColumn title={t('military.battle.topKills')} rows={battle.topKills} />
+        <ReportColumn title={t('military.battle.topDeaths')} rows={battle.topDeaths} />
+        <ReportColumn title={t('military.battle.topFame')} rows={battle.topFame} />
+      </div>
+      {battle.startTime && (
+        <p className="text-gray-600 text-xs">
+          {t('military.battle.started', { time: timeAgo(battle.startTime) })}
+          {battle.endTime ? ` ${t('military.battle.ended', { time: timeAgo(battle.endTime) })}` : ` ${t('military.battle.stillRunning')}`}
+        </p>
       )}
-      {region && <span className="text-gray-500 text-xs uppercase tracking-widest">{region}</span>}
-      {battle.clusterName && (
-        <span className="text-gray-500 text-xs uppercase tracking-widest">📍 {battle.clusterName}</span>
-      )}
-      <span className="text-gray-400 text-sm ml-auto">
-        {battle.playerCount} players · {battle.guildCount} guilds · {number.format(battle.totalKills)} kills ·{' '}
-        {number.format(battle.totalFame)} fame
-      </span>
     </div>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <ReportColumn title="☠️ Top kills" rows={battle.topKills} />
-      <ReportColumn title="💀 Top deaths" rows={battle.topDeaths} />
-      <ReportColumn title="💰 Top fame" rows={battle.topFame} />
-    </div>
-    {battle.startTime && (
-      <p className="text-gray-600 text-xs">
-        Started {timeAgo(battle.startTime)}
-        {battle.endTime ? ` · ended ${timeAgo(battle.endTime)}` : ' · still running'}
-      </p>
-    )}
-  </div>
-);
+  );
+};
 
 function BattleTab({ guildId }) {
+  const { t } = useI18n();
   const [auto, setAuto] = useState(null);
   const [autoError, setAutoError] = useState('');
   const [autoLoading, setAutoLoading] = useState(true);
@@ -565,17 +565,17 @@ function BattleTab({ guildId }) {
     <div className="space-y-6">
       <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-5">
         <div className="flex flex-wrap items-center gap-3">
-          <h3 className="text-white font-bold uppercase tracking-widest">Latest battle</h3>
-          <span className="text-gray-500 text-xs">auto-detected from your tracked guild</span>
+          <h3 className="text-white font-bold uppercase tracking-widest">{t('military.battle.latestTitle')}</h3>
+          <span className="text-gray-500 text-xs">{t('military.battle.autoDetected')}</span>
           <button
             onClick={loadLatest}
-            className="ml-auto px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
+            className="ms-auto px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
           >
-            Refresh
+            {t('common.refresh')}
           </button>
         </div>
 
-        {autoLoading && <p className="text-gray-500 text-sm">Loading the latest battle…</p>}
+        {autoLoading && <p className="text-gray-500 text-sm">{t('military.battle.loadingLatest')}</p>}
 
         {autoError && (
           <div className="bg-red-950/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-300 text-sm">
@@ -586,10 +586,10 @@ function BattleTab({ guildId }) {
         {!autoLoading && !autoError && auto && !auto.found && (
           <p className="text-gray-500 text-sm">
             {auto.configured === false
-              ? 'Set the guild name in Server Setup to auto-track its battles.'
+              ? t('military.battle.setGuildName')
               : auto.unresolved
-                ? 'The saved name is not a real Albion guild, so no battle could be found.'
-                : 'No recent battles found for this guild.'}
+                ? t('military.battle.notRealGuild')
+                : t('military.battle.noRecent')}
           </p>
         )}
 
@@ -599,21 +599,21 @@ function BattleTab({ guildId }) {
             onClick={() => lookup(autoBattle.id, true)}
             className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition"
           >
-            View players
+            {t('military.battle.viewPlayers')}
           </button>
         )}
       </div>
 
       <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-5">
         <div className="flex flex-wrap items-center gap-3">
-          <h3 className="text-white font-bold uppercase tracking-widest">Battle history</h3>
-          <span className="text-gray-500 text-xs">pick any saved fight and fetch its data</span>
+          <h3 className="text-white font-bold uppercase tracking-widest">{t('military.battle.historyTitle')}</h3>
+          <span className="text-gray-500 text-xs">{t('military.battle.historyHint')}</span>
           <button
             onClick={loadHistory}
             disabled={historyLoading}
-            className="ml-auto px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40"
+            className="ms-auto px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40"
           >
-            {historyLoading ? 'Refreshing…' : 'Refresh'}
+            {historyLoading ? t('common.refreshing') : t('common.refresh')}
           </button>
         </div>
 
@@ -625,17 +625,17 @@ function BattleTab({ guildId }) {
 
         {!historyLoading && !historyError && history.length === 0 && (
           <p className="text-gray-500 text-sm">
-            No saved battles yet. They are recorded automatically as your guild fights.
+            {t('military.battle.noSaved')}
           </p>
         )}
 
         {history.length > 0 && (
           <div className="flex flex-wrap gap-3">
             <select value={picked} onChange={onPick} className={`${inputCls} flex-1 min-w-[240px]`}>
-              <option value="">Choose a battle…</option>
+              <option value="">{t('military.battle.choose')}</option>
               {history.map((b) => (
                 <option key={b.battleId} value={b.battleId}>
-                  {`#${b.battleId} · ${b.clusterName || b.region || 'unknown'} · ${b.startTime ? new Date(b.startTime).toLocaleString() : ''} · ${number.format(b.totalKills)} kills${b.ongoing ? ' · Live' : ''}`}
+                  {`#${b.battleId} · ${b.clusterName || b.region || t('common.unknown')} · ${b.startTime ? new Date(b.startTime).toLocaleString() : ''} · ${number.format(b.totalKills)} ${t('common.kills')}${b.ongoing ? ` · ${t('common.live')}` : ''}`}
                 </option>
               ))}
             </select>
@@ -643,25 +643,25 @@ function BattleTab({ guildId }) {
               type="button"
               onClick={() => picked && lookup(picked, true)}
               disabled={!picked || loading}
-              title="Re-fetch the selected battle from scratch"
+              title={t('military.battle.refreshTitle')}
               className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              ↻ Refresh
+              ↻ {t('common.refresh')}
             </button>
           </div>
         )}
-        {loading && <p className="text-gray-500 text-sm">Loading battle data…</p>}
+        {loading && <p className="text-gray-500 text-sm">{t('military.battle.loadingData')}</p>}
       </div>
 
       <form onSubmit={runManual} className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-5">
-        <h3 className="text-white font-bold uppercase tracking-widest">Look up a battle by ID</h3>
-        <p className="text-gray-500 text-sm">Paste a Killboard battle ID to get the top damage, healing and kills.</p>
+        <h3 className="text-white font-bold uppercase tracking-widest">{t('military.battle.lookupTitle')}</h3>
+        <p className="text-gray-500 text-sm">{t('military.battle.lookupHint')}</p>
         <div className="flex flex-wrap gap-3">
           <input
             type="text"
             value={battleId}
             onChange={(e) => setBattleId(e.target.value)}
-            placeholder="Battle ID from the Killboard link"
+            placeholder={t('military.battle.idPlaceholder')}
             className={`${inputCls} flex-1 min-w-[240px]`}
           />
           <button
@@ -669,16 +669,16 @@ function BattleTab({ guildId }) {
             disabled={loading || !battleId.trim()}
             className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {loading ? 'Analyzing…' : 'Analyze'}
+            {loading ? t('military.battle.analyzing') : t('military.battle.analyze')}
           </button>
           <button
             type="button"
             onClick={() => lookup(battleId.trim(), true)}
             disabled={loading || !battleId.trim()}
-            title="Re-fetch the selected battle from scratch"
+            title={t('military.battle.refreshTitle')}
             className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            ↻ Refresh
+            ↻ {t('common.refresh')}
           </button>
         </div>
       </form>
@@ -689,7 +689,7 @@ function BattleTab({ guildId }) {
 
       {manual && !manual.found && (
         <div className="bg-amber-950/20 border border-amber-500/30 rounded-xl px-4 py-3 text-amber-300 text-sm">
-          Battle not found on any Albion server.
+          {t('military.battle.notFound')}
         </div>
       )}
 
@@ -703,19 +703,25 @@ function BattleTab({ guildId }) {
 }
 
 // ---------- Audit CTA ----------
-const AUDIT_STATUS = {
-  fought: { label: '✓ Fought', cls: 'bg-green-500/15 text-green-400 border-green-500/30' },
-  present: { label: '◍ No combat', cls: 'bg-amber-500/15 text-amber-400 border-amber-500/30' },
-  absent: { label: '⚠ AFK', cls: 'bg-red-500/15 text-red-400 border-red-500/30' },
+const AUDIT_STATUS_CLS = {
+  fought: 'bg-green-500/15 text-green-400 border-green-500/30',
+  present: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+  absent: 'bg-red-500/15 text-red-400 border-red-500/30',
+};
+const AUDIT_STATUS_KEY = {
+  fought: 'military.audit.statusFought',
+  present: 'military.audit.statusPresent',
+  absent: 'military.audit.statusAfk',
 };
 
-const fmtMinutes = (mins) => {
+const fmtMinutes = (t, mins) => {
   const m = mins || 0;
   const h = Math.floor(m / 60);
-  return h > 0 ? `${h}h ${m % 60}m` : `${m}m`;
+  return h > 0 ? t('military.minutes.hm', { h, m: m % 60 }) : t('military.minutes.m', { m });
 };
 
 function AuditTab({ guildId }) {
+  const { t } = useI18n();
   const [battles, setBattles] = useState([]);
   const [ctas, setCtas] = useState([]);
   const [battleId, setBattleId] = useState('');
@@ -771,19 +777,19 @@ function AuditTab({ guildId }) {
   return (
     <div className="space-y-6">
       <form onSubmit={run} className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-5">
-        <h3 className="text-white font-bold uppercase tracking-widest">Audit CTA</h3>
+        <h3 className="text-white font-bold uppercase tracking-widest">{t('military.audit.title')}</h3>
         <p className="text-gray-500 text-sm">
-          Cross-match a CTA roster with a battle to flag players who joined voice but never fought.
+          {t('military.audit.hint')}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label className="space-y-2">
-            <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">Battle</span>
+            <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">{t('military.audit.battleLabel')}</span>
             {battles.length > 0 ? (
               <select value={battleId} onChange={(e) => { setBattleId(e.target.value); setSelectedBattle(guildId, e.target.value); }} className={inputCls}>
                 {battles.map((b) => (
                   <option key={b.battleId} value={b.battleId}>
-                    {b.clusterName || 'Unknown'} · {new Date(b.startTime).toLocaleString()}
+                    {b.clusterName || t('common.unknown')} · {new Date(b.startTime).toLocaleString()}
                   </option>
                 ))}
               </select>
@@ -792,19 +798,19 @@ function AuditTab({ guildId }) {
                 type="text"
                 value={battleId}
                 onChange={(e) => setBattleId(e.target.value)}
-                placeholder="Battle ID from the Killboard link"
+                placeholder={t('military.battle.idPlaceholder')}
                 className={inputCls}
               />
             )}
           </label>
 
           <label className="space-y-2">
-            <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">CTA</span>
+            <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">{t('military.audit.ctaLabel')}</span>
             <select value={ctaId} onChange={(e) => setCtaId(e.target.value)} className={inputCls}>
-              <option value="">Latest finished CTA</option>
+              <option value="">{t('military.audit.latestCta')}</option>
               {ctas.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {new Date(c.endTime).toLocaleString()} · {c.attendeeCount} attendee(s)
+                  {new Date(c.endTime).toLocaleString()} · {t('military.audit.attendees', { n: c.attendeeCount })}
                 </option>
               ))}
             </select>
@@ -817,7 +823,7 @@ function AuditTab({ guildId }) {
             disabled={loading || !battleId.trim()}
             className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {loading ? 'Auditing…' : 'Audit'}
+            {loading ? t('military.audit.running') : t('military.audit.run')}
           </button>
         </div>
       </form>
@@ -828,33 +834,33 @@ function AuditTab({ guildId }) {
 
       {state && !state.hasCta && (
         <div className="bg-amber-950/20 border border-amber-500/30 rounded-xl px-4 py-3 text-amber-300 text-sm">
-          No finished CTA found for this server. Run a CTA in Discord first.
+          {t('military.audit.noCta')}
         </div>
       )}
       {state?.hasCta && !state.found && (
         <div className="bg-amber-950/20 border border-amber-500/30 rounded-xl px-4 py-3 text-amber-300 text-sm">
-          Battle not found on any Albion server.
+          {t('military.audit.notFound')}
         </div>
       )}
 
       {state?.hasCta && state.found && (
         <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-5">
           <p className="text-gray-400 text-sm">
-            CTA ended {state.ctaEndTime ? new Date(state.ctaEndTime).toLocaleString() : 'unknown'} · {state.total} attendee(s)
+            {t('military.audit.ended', { time: state.ctaEndTime ? new Date(state.ctaEndTime).toLocaleString() : t('common.unknown'), n: state.total })}
           </p>
 
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="bg-[#030303] border border-green-500/20 rounded-xl p-4">
               <p className="text-green-400 text-2xl font-bold">{state.activeFighters.length}</p>
-              <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Fought</p>
+              <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">{t('military.audit.fought')}</p>
             </div>
             <div className="bg-[#030303] border border-amber-500/20 rounded-xl p-4">
               <p className="text-amber-400 text-2xl font-bold">{state.presentNoCombat?.length || 0}</p>
-              <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Present, no combat</p>
+              <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">{t('military.audit.presentNoCombat')}</p>
             </div>
             <div className="bg-[#030303] border border-red-500/20 rounded-xl p-4">
               <p className="text-red-400 text-2xl font-bold">{state.suspectedAfk.length}</p>
-              <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">Suspected AFK</p>
+              <p className="text-gray-500 text-xs uppercase tracking-widest mt-1">{t('military.audit.suspectedAfk')}</p>
             </div>
           </div>
 
@@ -862,25 +868,25 @@ function AuditTab({ guildId }) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-gray-500 text-xs uppercase tracking-widest border-b border-white/10">
-                  <th className="text-left px-4 py-3 font-bold">Member</th>
-                  <th className="text-right px-4 py-3 font-bold">Time in voice</th>
-                  <th className="text-right px-4 py-3 font-bold">K</th>
-                  <th className="text-right px-4 py-3 font-bold">D</th>
-                  <th className="text-right px-4 py-3 font-bold">Status</th>
+                  <th className="text-start px-4 py-3 font-bold">{t('military.audit.member')}</th>
+                  <th className="text-end px-4 py-3 font-bold">{t('military.audit.timeInVoice')}</th>
+                  <th className="text-end px-4 py-3 font-bold">{t('military.audit.k')}</th>
+                  <th className="text-end px-4 py-3 font-bold">{t('military.audit.d')}</th>
+                  <th className="text-end px-4 py-3 font-bold">{t('common.status')}</th>
                 </tr>
               </thead>
               <tbody>
                 {state.attendees.map((a) => {
-                  const s = AUDIT_STATUS[a.status] || AUDIT_STATUS.absent;
+                  const key = AUDIT_STATUS_CLS[a.status] ? a.status : 'absent';
                   return (
                     <tr key={a.discordId} className="border-b border-white/5 last:border-0 hover:bg-white/5">
                       <td className="px-4 py-3 text-white">{a.albionName}</td>
-                      <td className="px-4 py-3 text-right text-gray-300">{fmtMinutes(a.minutes)}</td>
-                      <td className="px-4 py-3 text-right text-gray-300">{a.kills}</td>
-                      <td className="px-4 py-3 text-right text-gray-300">{a.deaths}</td>
-                      <td className="px-4 py-3 text-right">
-                        <span className={`inline-block px-2 py-0.5 rounded-md border text-xs font-bold ${s.cls}`}>
-                          {s.label}
+                      <td className="px-4 py-3 text-end text-gray-300">{fmtMinutes(t, a.minutes)}</td>
+                      <td className="px-4 py-3 text-end text-gray-300">{a.kills}</td>
+                      <td className="px-4 py-3 text-end text-gray-300">{a.deaths}</td>
+                      <td className="px-4 py-3 text-end">
+                        <span className={`inline-block px-2 py-0.5 rounded-md border text-xs font-bold ${AUDIT_STATUS_CLS[key]}`}>
+                          {t(AUDIT_STATUS_KEY[key])}
                         </span>
                       </td>
                     </tr>
@@ -897,6 +903,7 @@ function AuditTab({ guildId }) {
 
 // ---------- Military channel selector ----------
 function ChannelBar({ guild, onSaved }) {
+  const { t } = useI18n();
   const [channels, setChannels] = useState([]);
   const [value, setValue] = useState(guild.settings?.militaryChannelId || '');
   const [loading, setLoading] = useState(false);
@@ -943,7 +950,7 @@ function ChannelBar({ guild, onSaved }) {
   if (!guild.botPresent) {
     return (
       <div className="bg-[#0a0a0a] border border-amber-500/30 rounded-2xl px-5 py-4 text-amber-300 text-sm">
-        The bot is not in this server yet. Add it first to choose a military channel (timers still work below).
+        {t('military.botMissing')}
       </div>
     );
   }
@@ -954,9 +961,9 @@ function ChannelBar({ guild, onSaved }) {
     <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl px-5 py-4">
       <div className="flex flex-wrap items-end gap-3">
         <div className="flex-1 min-w-[220px]">
-          <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1.5">Military channel</p>
+          <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1.5">{t('military.channelLabel')}</p>
           <select value={value} onChange={(e) => setValue(e.target.value)} disabled={loading} className={inputCls}>
-            <option value="">{loading ? 'Loading channels…' : 'Select a channel…'}</option>
+            <option value="">{loading ? t('common.loadingChannels') : t('military.channelPlaceholder')}</option>
             {channels.map((c) => (
               <option key={c.id} value={c.id}>#{c.name}</option>
             ))}
@@ -967,11 +974,11 @@ function ChannelBar({ guild, onSaved }) {
           disabled={saving || !value || value === saved}
           className="px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {saving ? 'Saving…' : saved === value && saved ? 'Saved' : 'Save channel'}
+          {saving ? t('common.saving') : saved === value && saved ? t('common.saved') : t('military.channelSave')}
         </button>
       </div>
       <p className="text-gray-600 text-xs mt-2">
-        The bot posts the live timer board here. Other military tools below run directly on the website.
+        {t('military.channelNote')}
       </p>
       {error && <p className="text-red-300 text-xs mt-2">{error}</p>}
     </div>
@@ -980,36 +987,37 @@ function ChannelBar({ guild, onSaved }) {
 
 // ---------- Panel ----------
 const Military = ({ guild, onChannelSaved }) => {
+  const { t } = useI18n();
   const [tab, setTab] = useState('timers');
 
   const tabs = [
-    { key: 'timers', label: '⏳ Timers' },
-    { key: 'battle', label: '📊 Battle Report' },
-    { key: 'regear', label: '♻️ Regear' },
-    { key: 'audit', label: '🔍 Audit CTA' },
+    { key: 'timers', label: t('military.tabTimers') },
+    { key: 'battle', label: t('military.tabBattle') },
+    { key: 'regear', label: t('military.tabRegear') },
+    { key: 'audit', label: t('military.tabAudit') },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-white font-black uppercase tracking-tighter text-2xl lg:text-3xl">Military</h1>
-        <p className="text-gray-500 text-sm">Timers, battle intelligence and attendance audits — all from the website.</p>
+        <h1 className="text-white font-black uppercase tracking-tighter text-2xl lg:text-3xl">{t('military.title')}</h1>
+        <p className="text-gray-500 text-sm">{t('military.subtitle')}</p>
       </div>
 
       <ChannelBar guild={guild} onSaved={onChannelSaved} />
 
       <div className="flex flex-wrap gap-2">
-        {tabs.map((t) => (
+        {tabs.map((tb) => (
           <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
+            key={tb.key}
+            onClick={() => setTab(tb.key)}
             className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
-              tab === t.key
+              tab === tb.key
                 ? 'bg-red-950/40 border-[#e62b1e] text-white'
                 : 'border-white/10 text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            {t.label}
+            {tb.label}
           </button>
         ))}
       </div>

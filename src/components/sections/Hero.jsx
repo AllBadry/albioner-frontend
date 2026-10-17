@@ -1,13 +1,16 @@
 // قم بتعديل مسار الصورة حسب مكانها في مشروعك
 
+import { useI18n } from '../../i18n';
+
 // رابط حساب الديسكورد الخاص بالمطوّر (يُستخدم في زر "Programmer" بالأسفل).
 const DISCORD_PROFILE = 'https://discord.com/users/1342957056403181701';
 
 const Hero = () => {
+  const { t } = useI18n();
+
   return (
     // الحاوية الرئيسية: شاشة كاملة، خلفية سوداء داكنة جداً
     <section className="relative w-full min-h-screen bg-[#030303] overflow-hidden flex flex-col lg:flex-row items-center px-6 lg:px-16 pt-24 lg:pt-0">
-      
       
 
       {/* القسم الأيسر: النصوص الضخمة */}
@@ -15,9 +18,9 @@ const Hero = () => {
         
         {/* النص الأحمر الضخم */}
         <h1 className="flex flex-col text-[#e62b1e] font-black uppercase leading-[0.85] tracking-tighter text-[70px] sm:text-[100px] lg:text-[130px] xl:text-[160px]">
-          <span>Albion</span>
-          <span>Alliance</span>
-          <span>Manager</span>
+          <span>{t('hero.line1')}</span>
+          <span>{t('hero.line2')}</span>
+          <span>{t('hero.line3')}</span>
         </h1>
         
         {/* النص الأبيض المائل (يشبه خط اليد) */}
@@ -26,7 +29,7 @@ const Hero = () => {
             className="text-white text-4xl lg:text-6xl tracking-wide" 
             style={{ fontFamily: "'Caveat', 'Segoe UI', cursive" }}
           >
-            Free Bot ©
+            {t('hero.freeBot')}
           </span>
         </div>
       </div>
@@ -48,7 +51,7 @@ const Hero = () => {
           href="/login" 
           className="text-white font-bold uppercase text-sm lg:text-lg tracking-widest border-b-4 border-[#e62b1e] pb-1 hover:text-[#e62b1e] transition-colors"
         >
-          Get Started
+          {t('hero.getStarted')}
         </a>
         <a 
           href={DISCORD_PROFILE}
@@ -56,7 +59,7 @@ const Hero = () => {
           rel="noopener noreferrer"
           className="text-white font-bold uppercase text-sm lg:text-lg tracking-widest border-b-4 border-[#e62b1e] pb-1 hover:text-[#e62b1e] transition-colors"
         >
-          Programmer
+          {t('hero.programmer')}
         </a>
       </div>
 

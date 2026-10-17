@@ -8,37 +8,42 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { apiFetch } from '../api';
-import { number, silver, itemImage } from '../utils/format';
+import { number, itemImage } from '../utils/format';
+import { useI18n } from '../i18n';
 import { fetchBattleReport, peekBattleReport } from '../utils/battleCache';
 import { getSelectedBattle, setSelectedBattle } from '../utils/selectedBattle';
 
 const itemKey = (player, d, i) => `${player}|${d}|${i}`;
 const storeKey = (guildId, id) => `regear:${guildId}:${id}`;
 
-const SheetItem = ({ item, included, onToggle }) => (
-  <button
-    type="button"
-    onClick={onToggle}
-    className={`flex items-center gap-2 rounded-lg border px-2 py-1.5 transition-colors ${
-      included ? 'border-white/10 bg-[#030303] hover:border-[#e62b1e]/50' : 'border-red-500/20 bg-red-950/10 opacity-50'
-    }`}
-    title={included ? 'Included — click to remove' : 'Removed — click to include'}
-  >
-    <span className={`w-4 h-4 rounded border flex items-center justify-center text-[10px] ${included ? 'bg-[#e62b1e] border-[#e62b1e] text-white' : 'border-gray-600 text-transparent'}`}>✓</span>
-    <img
-      src={itemImage(item.type)}
-      alt=""
-      className="w-7 h-7 object-contain"
-      onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
-    />
-    <span className="text-gray-300 text-xs">
-      {item.count > 1 ? `${item.count}× ` : ''}{item.type}
-    </span>
-    <span className="ml-3 text-gray-400 text-xs tabular-nums">{item.price ? silver(item.price * item.count) : '—'}</span>
-  </button>
-);
+const SheetItem = ({ item, included, onToggle }) => {
+  const { t, silver } = useI18n();
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`flex items-center gap-2 rounded-lg border px-2 py-1.5 transition-colors ${
+        included ? 'border-white/10 bg-[#030303] hover:border-[#e62b1e]/50' : 'border-red-500/20 bg-red-950/10 opacity-50'
+      }`}
+      title={included ? t('regear.include') : t('regear.exclude')}
+    >
+      <span className={`w-4 h-4 rounded border flex items-center justify-center text-[10px] ${included ? 'bg-[#e62b1e] border-[#e62b1e] text-white' : 'border-gray-600 text-transparent'}`}>✓</span>
+      <img
+        src={itemImage(item.type)}
+        alt=""
+        className="w-7 h-7 object-contain"
+        onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+      />
+      <span className="text-gray-300 text-xs">
+        {item.count > 1 ? `${item.count}× ` : ''}{item.type}
+      </span>
+      <span className="ms-3 text-gray-400 text-xs tabular-nums">{item.price ? silver(item.price * item.count) : '—'}</span>
+    </button>
+  );
+};
 
 const Regear = ({ guild, guildId }) => {
+  const { t, silver } = useI18n();
   const trackedName = (guild?.settings?.allianceName || guild?.name || '').toLowerCase();
 
   const [history, setHistory] = useState([]);
@@ -145,24 +150,24 @@ const Regear = ({ guild, guildId }) => {
     <div className="space-y-6">
       <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-4">
         <div className="flex flex-wrap items-center gap-3">
-          <h3 className="text-white font-bold uppercase tracking-widest">Regear sheet</h3>
+          <h3 className="text-white font-bold uppercase tracking-widest">{t('regear.sheetTitle')}</h3>
           <span className="text-gray-500 text-xs">
-            gear dropped by {guild?.settings?.allianceName || guild?.name || 'your guild'} — grab what you refund, remove the rest
+            {t('regear.subtitle', { guild: guild?.settings?.allianceName || guild?.name || '' })}
           </span>
         </div>
 
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex-1 min-w-[240px]">
-            <span className="block text-gray-400 text-xs font-bold uppercase tracking-widest mb-1.5">Battle</span>
+            <span className="block text-gray-400 text-xs font-bold uppercase tracking-widest mb-1.5">{t('regear.battle')}</span>
             <select
               value={battleId}
               onChange={(e) => { setBattleId(e.target.value); setSelectedBattle(guildId, e.target.value); loadReport(e.target.value); }}
               className="w-full bg-[#030303] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#e62b1e] transition-colors"
             >
-              <option value="">Choose a battle…</option>
+              <option value="">{t('regear.choose')}</option>
               {history.map((b) => (
                 <option key={b.battleId} value={b.battleId}>
-                  {`#${b.battleId} · ${b.clusterName || b.region || 'unknown'} · ${b.startTime ? new Date(b.startTime).toLocaleString() : ''} · ${number.format(b.totalKills)} kills`}
+                  {`#${b.battleId} · ${b.clusterName || b.region || t('common.unknown')} · ${b.startTime ? new Date(b.startTime).toLocaleString() : ''} · ${number.format(b.totalKills)} ${t('common.kills')}`}
                 </option>
               ))}
             </select>
@@ -171,18 +176,18 @@ const Regear = ({ guild, guildId }) => {
             type="button"
             onClick={() => loadReport(battleId, true)}
             disabled={!battleId || loading}
-            title="Re-fetch this battle's report from scratch"
+            title={t('regear.refreshTitle')}
             className="px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            ↻ Refresh
+            ↻ {t('common.refresh')}
           </button>
           {allKeys.length > 0 && (
             <>
               <button onClick={() => setAll(allKeys, false)} className="px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors">
-                Grab all
+                {t('regear.grabAll')}
               </button>
               <button onClick={() => setAll(allKeys, true)} className="px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors">
-                Remove all
+                {t('regear.removeAll')}
               </button>
             </>
           )}
@@ -190,15 +195,15 @@ const Regear = ({ guild, guildId }) => {
 
         <div className="flex flex-wrap gap-6 pt-2">
           <div>
-            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Members</p>
+            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">{t('regear.members')}</p>
             <p className="text-white text-xl font-black tabular-nums">{players.length}</p>
           </div>
           <div>
-            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Total dropped</p>
+            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">{t('regear.totalDropped')}</p>
             <p className="text-gray-300 text-xl font-black tabular-nums">{silver(totalDropped)}</p>
           </div>
           <div>
-            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Selected for regear</p>
+            <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">{t('regear.selected')}</p>
             <p className="text-[#e62b1e] text-xl font-black tabular-nums">{silver(includedTotal)}</p>
           </div>
         </div>
@@ -208,16 +213,16 @@ const Regear = ({ guild, guildId }) => {
         <div className="bg-red-950/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-300 text-sm">{error}</div>
       )}
 
-      {loading && <p className="text-gray-500 text-sm">Loading battle data…</p>}
+      {loading && <p className="text-gray-500 text-sm">{t('regear.loading')}</p>}
 
       {data && !data.found && (
         <div className="bg-amber-950/20 border border-amber-500/30 rounded-xl px-4 py-3 text-amber-300 text-sm">
-          Battle not found on any Albion server.
+          {t('regear.notFound')}
         </div>
       )}
 
       {data?.found && players.length === 0 && (
-        <p className="text-gray-500 text-sm">None of your guild members dropped gear in this battle.</p>
+        <p className="text-gray-500 text-sm">{t('regear.noneDropped')}</p>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -229,17 +234,17 @@ const Regear = ({ guild, guildId }) => {
               <div className="flex items-center gap-2 mb-2">
                 <p className="text-white font-bold truncate">{p.name}</p>
                 <span className="text-gray-600 text-xs">IP {p.averageItemPower}</span>
-                <span className="ml-auto text-[#e62b1e] text-sm font-bold tabular-nums">{silver(lost)}</span>
+                <span className="ms-auto text-[#e62b1e] text-sm font-bold tabular-nums">{silver(lost)}</span>
               </div>
               <p className="text-gray-500 text-xs mb-3">
-                {p.deaths} death(s) · killed {p.kills} · fame {number.format(p.killFame)}
+                {t('regear.killsFame', { deaths: p.deaths, kills: p.kills, fame: number.format(p.killFame) })}
               </p>
               <div className="space-y-3">
                 {p.died.map((d, di) => (
                   <div key={di} className="bg-black/30 border border-white/5 rounded-xl p-3">
                     {d.killerName && (
                       <p className="text-gray-500 text-[11px] mb-2">
-                        Killed by <span className="text-white font-bold">{d.killerName}</span>
+                        {t('regear.killedBy', { name: d.killerName })}
                       </p>
                     )}
                     <div className="flex flex-wrap gap-2">

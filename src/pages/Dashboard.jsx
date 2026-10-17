@@ -8,6 +8,8 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../auth';
 import { apiFetch } from '../api';
 import { buildBotInviteUrl, CHANNEL_FIELDS } from '../config';
+import { useI18n } from '../i18n';
+import LanguageSwitcher from '../components/layout/LanguageSwitcher';
 import KillWatcher from '../components/KillWatcher';
 import Military from '../components/Military';
 import Economy from '../components/Economy';
@@ -25,12 +27,12 @@ const EMPTY_FORM = {
 
 // Dashboard views — shared by the desktop sidebar and the mobile bottom bar.
 const NAV = [
-  { key: 'setup', label: 'Server Setup', short: 'Setup', icon: '⚙️' },
-  { key: 'kills', label: 'Kill Watcher', short: 'Kills', icon: '⚔️' },
-  { key: 'military', label: 'Military', short: 'Military', icon: '🎯' },
-  { key: 'economy', label: 'Economy', short: 'Economy', icon: '💰' },
-  { key: 'members', label: 'Members', short: 'Members', icon: '👥' },
-  { key: 'inbox', label: 'Inbox', short: 'Inbox', icon: '📥' },
+  { key: 'setup', icon: '⚙️' },
+  { key: 'kills', icon: '⚔️' },
+  { key: 'military', icon: '🎯' },
+  { key: 'economy', icon: '💰' },
+  { key: 'members', icon: '👥' },
+  { key: 'inbox', icon: '📥' },
 ];
 
 const formFromSettings = (settings) => ({
@@ -59,6 +61,7 @@ const GuildAvatar = ({ guild, size = 'w-10 h-10' }) => {
 
 const Dashboard = () => {
   const { loggedIn, user, logout } = useAuth();
+  const { t } = useI18n();
 
   const [guilds, setGuilds] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -171,7 +174,7 @@ const Dashboard = () => {
         method: 'POST',
         body: JSON.stringify(form),
       });
-      setNotice({ type: 'ok', text: 'Settings saved. The bot will now watch this guild.' });
+      setNotice({ type: 'ok', text: t('dashboard.settingsSaved') });
       setGuilds((prev) =>
         prev.map((g) =>
           g.id === selected.id
@@ -226,18 +229,19 @@ const Dashboard = () => {
             }}
             className="flex-1 min-w-0 bg-[#030303] border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#e62b1e] transition-colors"
           >
-            <option value="">Select a server…</option>
+            <option value="">{t('dashboard.selectServer')}</option>
             {guilds.map((g) => (
               <option key={g.id} value={g.id}>
-                {g.name}{g.botPresent ? (g.configured ? ' ✓' : ' ⚙') : ' — no bot'}
+                {g.name}{g.botPresent ? (g.configured ? ' ✓' : ' ⚙') : ` ${t('dashboard.noBotSuffix')}`}
               </option>
             ))}
           </select>
+          <LanguageSwitcher className="flex-shrink-0" />
           <button
             onClick={logout}
             className="px-3 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest text-red-400 border border-white/10 hover:bg-red-950/40 transition-colors flex-shrink-0"
           >
-            Exit
+            {t('dashboard.exit')}
           </button>
         </div>
       </div>
@@ -259,12 +263,12 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-3">Your servers</p>
+            <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-3">{t('dashboard.yourServers')}</p>
 
-            {loading && <p className="text-gray-500 text-sm py-2">Loading servers…</p>}
+            {loading && <p className="text-gray-500 text-sm py-2">{t('dashboard.loadingServers')}</p>}
 
             {!loading && guilds.length === 0 && (
-              <p className="text-gray-500 text-sm py-2">No servers where you are an admin.</p>
+              <p className="text-gray-500 text-sm py-2">{t('dashboard.noAdminServers')}</p>
             )}
 
             <div className="flex flex-col gap-2">
@@ -272,7 +276,7 @@ const Dashboard = () => {
                 <button
                   key={g.id}
                   onClick={() => selectGuild(g)}
-                  className={`flex items-center gap-3 p-2.5 rounded-xl text-left transition-all duration-200 border ${
+                  className={`flex items-center gap-3 p-2.5 rounded-xl text-start transition-all duration-200 border ${
                     selectedId === g.id
                       ? 'bg-red-950/40 border-[#e62b1e]'
                       : 'border-white/5 hover:border-white/20 hover:bg-white/5'
@@ -282,7 +286,7 @@ const Dashboard = () => {
                   <span className="min-w-0 flex-1">
                     <span className="block text-white font-bold text-sm truncate">{g.name}</span>
                     <span className="block text-[10px] uppercase tracking-widest text-gray-500">
-                      {g.botPresent ? (g.configured ? 'Configured' : 'Ready to set up') : 'Bot not added'}
+                      {g.botPresent ? (g.configured ? t('dashboard.configured') : t('dashboard.readySetup')) : t('dashboard.botNotAdded')}
                     </span>
                   </span>
                   {g.botPresent && (
@@ -298,16 +302,16 @@ const Dashboard = () => {
                   <button
                     key={item.key}
                     onClick={() => openView(item.key)}
-                    className={`flex items-center gap-2 text-left px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
+                    className={`flex items-center gap-2 text-start px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
                       view === item.key
                         ? 'bg-red-950/40 border-[#e62b1e] text-white'
                         : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     <span>{item.icon}</span>
-                    <span>{item.label}</span>
+                    <span>{t(`dashboard.nav.${item.key}`)}</span>
                     {item.key === 'inbox' && inboxCount > 0 && (
-                      <span className="ml-auto min-w-[20px] h-5 px-1.5 rounded-full bg-[#e62b1e] text-white text-[10px] font-black flex items-center justify-center">
+                      <span className="ms-auto min-w-[20px] h-5 px-1.5 rounded-full bg-[#e62b1e] text-white text-[10px] font-black flex items-center justify-center">
                         {inboxCount}
                       </span>
                     )}
@@ -316,18 +320,22 @@ const Dashboard = () => {
               </div>
             )}
 
+            <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+              <LanguageSwitcher align="start" />
+            </div>
+
             <button
               onClick={() => window.open(buildBotInviteUrl(), '_blank', 'noopener')}
               className="w-full mt-4 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
             >
-              + Add bot to a server
+              {t('dashboard.addBot')}
             </button>
 
             <button
               onClick={logout}
               className="w-full mt-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest text-red-400 hover:text-white hover:bg-red-950/40 border border-white/10 transition-colors"
             >
-              Log out
+              {t('dashboard.logOut')}
             </button>
           </div>
         </aside>
@@ -337,16 +345,16 @@ const Dashboard = () => {
           {error && (
             <div className="mb-6 flex items-center justify-between gap-4 bg-red-950/30 border border-red-500/30 rounded-xl px-5 py-4">
               <p className="text-red-300 text-sm">{error}</p>
-              <button onClick={loadGuilds} className="text-white text-xs font-bold uppercase tracking-widest hover:text-[#e62b1e]">Retry</button>
+              <button onClick={loadGuilds} className="text-white text-xs font-bold uppercase tracking-widest hover:text-[#e62b1e]">{t('common.retry')}</button>
             </div>
           )}
 
           {!selected && (
             <div className="flex flex-col items-center justify-center text-center py-28 border border-dashed border-white/10 rounded-2xl animate-fade-in">
               <div className="text-5xl mb-4 opacity-40">🖥️</div>
-              <h2 className="text-white font-black uppercase tracking-widest mb-2">Select a server</h2>
+              <h2 className="text-white font-black uppercase tracking-widest mb-2">{t('dashboard.selectTitle')}</h2>
               <p className="text-gray-500 text-sm max-w-md">
-                Choose one of your servers from the list to set up the kill feed and notifications.
+                {t('dashboard.selectBody')}
               </p>
             </div>
           )}
@@ -365,23 +373,22 @@ const Dashboard = () => {
               {/* Step 1: invite the bot if missing */}
               {!selected.botPresent && (
                 <div className="bg-[#0a0a0a] border border-amber-500/30 rounded-2xl p-6 lg:p-8">
-                  <h2 className="text-white font-bold uppercase tracking-widest mb-2">Step 1 — Add the bot</h2>
+                  <h2 className="text-white font-bold uppercase tracking-widest mb-2">{t('dashboard.step1Title')}</h2>
                   <p className="text-gray-400 text-sm mb-6 max-w-2xl">
-                    The bot is not in this server yet. Click below and approve the Discord screen to invite it.
-                    It needs permission to view channels and send messages.
+                    {t('dashboard.step1Body')}
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <button
                       onClick={addBot}
                       className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-white bg-[#5865F2] hover:bg-[#4752C4] transition-colors"
                     >
-                      Add Bot to Server
+                      {t('dashboard.addBotBtn')}
                     </button>
                     <button
                       onClick={refreshSelected}
                       className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
                     >
-                      I&apos;ve added it — refresh
+                      {t('dashboard.refreshAdded')}
                     </button>
                   </div>
                 </div>
@@ -391,36 +398,36 @@ const Dashboard = () => {
               {selected.botPresent && (
                 <form onSubmit={saveSettings} className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-8 space-y-6">
                   <div>
-                    <h2 className="text-white font-bold uppercase tracking-widest">Step 2 — Configure</h2>
-                    <p className="text-gray-500 text-sm mt-1">Tell the bot which Albion guild to watch and where to post alerts.</p>
+                    <h2 className="text-white font-bold uppercase tracking-widest">{t('dashboard.step2Title')}</h2>
+                    <p className="text-gray-500 text-sm mt-1">{t('dashboard.step2Body')}</p>
                   </div>
 
                   <div>
                     <label className="block text-gray-400 text-xs font-bold uppercase tracking-widest mb-2">
-                      Guild Name (in Albion)
+                      {t('dashboard.guildNameLabel')}
                     </label>
                     <input
                       type="text"
                       value={form.allianceName}
                       onChange={(e) => setForm((f) => ({ ...f, allianceName: e.target.value }))}
-                      placeholder="e.g. Sun"
+                      placeholder={t('dashboard.guildNamePlaceholder')}
                       className="w-full bg-[#030303] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-[#e62b1e] transition-colors"
                     />
-                    <p className="text-gray-600 text-xs mt-2">Must match the Albion guild name exactly (case-sensitive).</p>
+                    <p className="text-gray-600 text-xs mt-2">{t('dashboard.guildNameHint')}</p>
                   </div>
 
                   <div>
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">Notification channels</h3>
-                      {channelsLoading && <span className="text-gray-600 text-xs">Loading channels…</span>}
+                      <h3 className="text-gray-400 text-xs font-bold uppercase tracking-widest">{t('dashboard.notificationChannels')}</h3>
+                      {channelsLoading && <span className="text-gray-600 text-xs">{t('common.loadingChannels')}</span>}
                     </div>
                     <div className="space-y-4">
                       {CHANNEL_FIELDS.map((field, i) => (
                         <div key={field.key}>
                           <label className="block text-gray-300 text-xs font-bold uppercase tracking-widest mb-1.5">
-                            <span className="text-[#e62b1e]">{field.optional ? '+' : `${i + 1}.`}</span> {field.label}
+                            <span className="text-[#e62b1e]">{field.optional ? '+' : `${i + 1}.`}</span> {t(`channels.${field.key}.label`)}
                             {field.optional && (
-                              <span className="ml-2 text-[10px] font-bold text-gray-500 border border-white/10 rounded px-1.5 py-0.5 normal-case">optional</span>
+                              <span className="ms-2 text-[10px] font-bold text-gray-500 border border-white/10 rounded px-1.5 py-0.5 normal-case">{t('common.optional')}</span>
                             )}
                           </label>
                           <select
@@ -429,12 +436,12 @@ const Dashboard = () => {
                             disabled={channelsLoading}
                             className="w-full bg-[#030303] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#e62b1e] transition-colors disabled:opacity-50"
                           >
-                            <option value="">{field.optional ? 'None' : 'Select a channel…'}</option>
+                            <option value="">{field.optional ? t('common.none') : t('dashboard.selectChannel')}</option>
                             {channels.map((c) => (
                               <option key={c.id} value={c.id}>#{c.name}</option>
                             ))}
                           </select>
-                          <p className="text-gray-600 text-xs mt-1.5">{field.hint}</p>
+                          <p className="text-gray-600 text-xs mt-1.5">{t(`channels.${field.key}.hint`)}</p>
                         </div>
                       ))}
                     </div>
@@ -456,14 +463,14 @@ const Dashboard = () => {
                       disabled={saving || !form.allianceName.trim() || !allChannelsChosen}
                       className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                      {saving ? 'Saving…' : 'Save settings'}
+                      {saving ? t('common.saving') : t('dashboard.saveSettings')}
                     </button>
                     <button
                       type="button"
                       onClick={refreshSelected}
                       className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
                     >
-                      Refresh
+                      {t('common.refresh')}
                     </button>
                   </div>
                 </form>
@@ -516,7 +523,7 @@ const Dashboard = () => {
                 }`}
               >
                 <span className="text-lg leading-none">{item.icon}</span>
-                <span className="text-[9px] font-bold uppercase tracking-tight leading-none">{item.short}</span>
+                <span className="text-[9px] font-bold uppercase tracking-tight leading-none">{t(`dashboard.navShort.${item.key}`)}</span>
                 {item.key === 'inbox' && inboxCount > 0 && (
                   <span className="absolute top-1 right-1/2 translate-x-4 min-w-[16px] h-4 px-1 rounded-full bg-[#e62b1e] text-white text-[9px] font-black flex items-center justify-center">
                     {inboxCount > 9 ? '9+' : inboxCount}

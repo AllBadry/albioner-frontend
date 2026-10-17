@@ -6,7 +6,8 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { apiFetch } from '../api';
-import { number, silver, itemImage } from '../utils/format';
+import { number, itemImage } from '../utils/format';
+import { useI18n } from '../i18n';
 
 const DropGrid = ({ drops }) => (
   <div className="flex flex-wrap gap-2 pt-3">
@@ -34,6 +35,7 @@ const MobileStat = ({ label, value, cls }) => (
 );
 
 const Members = ({ guild }) => {
+  const { t, silver } = useI18n();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [syncing, setSyncing] = useState(false);
@@ -86,17 +88,17 @@ const Members = ({ guild }) => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex-1 min-w-0">
-          <h1 className="text-white font-black uppercase tracking-tighter text-2xl lg:text-3xl">Members</h1>
+          <h1 className="text-white font-black uppercase tracking-tighter text-2xl lg:text-3xl">{t('members.title')}</h1>
           <p className="text-gray-500 text-sm">
-            Roster for <span className="text-[#e62b1e] font-bold">{guild.name}</span>
-            {data && <span className="text-gray-600"> · {data.count} members</span>}
+            {t('members.rosterFor', { guild: guild.name })}
+            {data && <span className="text-gray-600"> · {t('members.count', { n: data.count })}</span>}
           </p>
         </div>
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search a member…"
+          placeholder={t('members.search')}
           className="flex-1 min-w-[160px] bg-[#030303] border border-white/10 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#e62b1e] transition-colors"
         />
         <button
@@ -104,7 +106,7 @@ const Members = ({ guild }) => {
           disabled={syncing}
           className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40"
         >
-          {syncing ? 'Syncing…' : 'Sync now'}
+          {syncing ? t('members.syncing') : t('members.syncNow')}
         </button>
       </div>
 
@@ -112,21 +114,21 @@ const Members = ({ guild }) => {
         <div className="bg-red-950/20 border border-red-500/30 rounded-xl px-4 py-3 text-red-300 text-sm">{error}</div>
       )}
 
-      {loading && !data && <p className="text-gray-500 text-sm">Loading members…</p>}
+      {loading && !data && <p className="text-gray-500 text-sm">{t('members.loadingMembers')}</p>}
 
       {data && members.length === 0 && (
         <div className="flex flex-col items-center justify-center text-center py-24 border border-dashed border-white/10 rounded-xl">
           <div className="text-5xl mb-4 opacity-40">👥</div>
-          <h3 className="text-white font-bold uppercase tracking-widest mb-2">No roster yet</h3>
+          <h3 className="text-white font-bold uppercase tracking-widest mb-2">{t('members.noRosterTitle')}</h3>
           <p className="text-gray-500 text-sm max-w-md mb-6">
-            Set the guild name in <span className="text-white">Server Setup</span>, then sync to pull the member list from Albion.
+            {t('members.noRosterBody')}
           </p>
           <button
             onClick={sync}
             disabled={syncing}
             className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition disabled:opacity-40"
           >
-            {syncing ? 'Syncing…' : 'Sync members'}
+            {syncing ? t('members.syncing') : t('members.syncMembers')}
           </button>
         </div>
       )}
@@ -134,12 +136,12 @@ const Members = ({ guild }) => {
       {filtered.length > 0 && (
         <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden">
           <div className="hidden md:grid grid-cols-[2fr_1fr_1fr_1.1fr_1.1fr_1.2fr] gap-4 px-5 py-3 border-b border-white/10 text-gray-500 text-xs font-bold uppercase tracking-widest">
-            <span>Member</span>
-            <span className="text-right">Kills</span>
-            <span className="text-right">Deaths</span>
-            <span className="text-right">Kill fame</span>
-            <span className="text-right">Death fame</span>
-            <span className="text-right">Loot lost</span>
+            <span>{t('members.member')}</span>
+            <span className="text-end">{t('members.kills')}</span>
+            <span className="text-end">{t('members.deaths')}</span>
+            <span className="text-end">{t('members.killFame')}</span>
+            <span className="text-end">{t('members.deathFame')}</span>
+            <span className="text-end">{t('members.lootLost')}</span>
           </div>
           {filtered.map((m) => {
             const open = openId === m.memberId;
@@ -149,18 +151,18 @@ const Members = ({ guild }) => {
                 <button
                   onClick={() => setOpenId(open ? null : m.memberId)}
                   disabled={m.drops.length === 0}
-                  className="hidden md:grid w-full grid-cols-[2fr_1fr_1fr_1.1fr_1.1fr_1.2fr] gap-4 px-5 py-3.5 text-left hover:bg-white/5 transition-colors disabled:cursor-default"
+                  className="hidden md:grid w-full grid-cols-[2fr_1fr_1fr_1.1fr_1.1fr_1.2fr] gap-4 px-5 py-3.5 text-start hover:bg-white/5 transition-colors disabled:cursor-default"
                 >
                   <span className="text-white font-bold text-sm truncate flex items-center gap-2">
                     {m.name}
                     <span className="text-gray-600 text-[10px] font-normal uppercase tracking-widest">IP {m.averageItemPower}</span>
                     {m.drops.length > 0 && <span className="text-gray-600 text-xs">▾</span>}
                   </span>
-                  <span className="text-green-400 text-sm font-bold tabular-nums text-right">{m.kills}</span>
-                  <span className="text-red-400 text-sm font-bold tabular-nums text-right">{m.deaths}</span>
-                  <span className="text-gray-300 text-sm tabular-nums text-right">{number.format(m.killFame || 0)}</span>
-                  <span className="text-gray-400 text-sm tabular-nums text-right">{number.format(m.deathFame || 0)}</span>
-                  <span className="text-gray-300 text-sm tabular-nums text-right">
+                  <span className="text-green-400 text-sm font-bold tabular-nums text-end">{m.kills}</span>
+                  <span className="text-red-400 text-sm font-bold tabular-nums text-end">{m.deaths}</span>
+                  <span className="text-gray-300 text-sm tabular-nums text-end">{number.format(m.killFame || 0)}</span>
+                  <span className="text-gray-400 text-sm tabular-nums text-end">{number.format(m.deathFame || 0)}</span>
+                  <span className="text-gray-300 text-sm tabular-nums text-end">
                     {m.lostValue > 0 ? <span className="text-amber-400/80">{silver(m.lostValue)}</span> : '—'}
                   </span>
                 </button>
@@ -169,7 +171,7 @@ const Members = ({ guild }) => {
                 <button
                   onClick={() => setOpenId(open ? null : m.memberId)}
                   disabled={m.drops.length === 0}
-                  className="md:hidden w-full px-4 py-3 text-left hover:bg-white/5 transition-colors disabled:cursor-default"
+                  className="md:hidden w-full px-4 py-3 text-start hover:bg-white/5 transition-colors disabled:cursor-default"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-white font-bold text-sm truncate flex items-center gap-2">
@@ -179,17 +181,17 @@ const Members = ({ guild }) => {
                     <span className="text-gray-600 text-[10px] font-normal uppercase tracking-widest flex-shrink-0">IP {m.averageItemPower}</span>
                   </div>
                   <div className="mt-2 grid grid-cols-3 gap-2 text-center">
-                    <MobileStat label="Kills" value={m.kills} cls="text-green-400" />
-                    <MobileStat label="Deaths" value={m.deaths} cls="text-red-400" />
-                    <MobileStat label="Kill fame" value={number.format(m.killFame || 0)} cls="text-gray-300" />
-                    <MobileStat label="Death fame" value={number.format(m.deathFame || 0)} cls="text-gray-400" />
-                    <MobileStat label="Loot lost" value={m.lostValue > 0 ? silver(m.lostValue) : '—'} cls="text-amber-400/80" />
+                    <MobileStat label={t('members.kills')} value={m.kills} cls="text-green-400" />
+                    <MobileStat label={t('members.deaths')} value={m.deaths} cls="text-red-400" />
+                    <MobileStat label={t('members.killFame')} value={number.format(m.killFame || 0)} cls="text-gray-300" />
+                    <MobileStat label={t('members.deathFame')} value={number.format(m.deathFame || 0)} cls="text-gray-400" />
+                    <MobileStat label={t('members.lootLost')} value={m.lostValue > 0 ? silver(m.lostValue) : '—'} cls="text-amber-400/80" />
                   </div>
                 </button>
 
                 {open && m.drops.length > 0 && (
                   <div className="px-4 md:px-5 pb-4">
-                    <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">Items dropped ({m.drops.length})</p>
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-widest">{t('members.itemsDropped', { n: m.drops.length })}</p>
                     <DropGrid drops={m.drops} />
                   </div>
                 )}
@@ -200,7 +202,7 @@ const Members = ({ guild }) => {
       )}
 
       {filtered.length === 0 && members.length > 0 && (
-        <p className="text-gray-500 text-sm">No member matches “{query}”.</p>
+        <p className="text-gray-500 text-sm">{t('members.noMatch', { query })}</p>
       )}
     </div>
   );

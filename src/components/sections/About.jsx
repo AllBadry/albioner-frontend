@@ -1,25 +1,27 @@
 import { useState } from 'react';
+import { useI18n } from '../../i18n';
 
 
 const About = () => {
   const [activeFeature, setActiveFeature] = useState(null);
+  const { t } = useI18n();
 
   const features = [
     {
       id: 1,
-      title: "Economy & Trade Insights",
-      desc: "Smart, real-time analysis of in-game economy and prices to help your alliance make sound financial decisions."
+      title: t('about.f1title'),
+      desc: t('about.f1desc'),
     },
     {
       id: 2,
-      title: "Automated Verification Gate",
-      desc: "A smart verification gate that links member accounts automatically, completely preventing spies from infiltrating your server."
+      title: t('about.f2title'),
+      desc: t('about.f2desc'),
     },
     {
       id: 3,
-      title: "One-Click Regear Management",
-      desc: "A single-click gear compensation system that eliminates the complexity of tedious manual calculations."
-    }
+      title: t('about.f3title'),
+      desc: t('about.f3desc'),
+    },
   ];
 
   return (
@@ -58,15 +60,15 @@ const About = () => {
       <div className="relative z-10 flex flex-col justify-center h-full w-full lg:w-1/2 mt-10 lg:mt-0 animate-slide-up pl-0 lg:pl-8">
         
         <div className="text-gray-400 text-xs font-bold tracking-widest uppercase mb-4 drop-shadow-md">
-          <p>The Ultimate Tool</p>
+          <p>{t('about.tag')}</p>
         </div>
 
         <h2 className="text-[#e62b1e] font-black uppercase leading-[0.9] tracking-tighter text-[60px] sm:text-[80px] lg:text-[110px] transform hover:scale-[1.02] transition-transform duration-300 drop-shadow-lg">
-          Beyond <br /> Just ZvZ
+          {t('about.titleA')} <br /> {t('about.titleB')}
         </h2>
         
         <p className="text-gray-200 mt-6 text-lg lg:text-xl leading-relaxed max-w-xl drop-shadow-md font-medium">
-          Albioner is not just a battle-tracking bot. It's a complete ecosystem that manages every detail of your alliance, saving your leadership hours of hard work.
+          {t('about.intro')}
         </p>
 
         {/* Features List */}
