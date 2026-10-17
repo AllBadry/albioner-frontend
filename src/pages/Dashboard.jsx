@@ -12,6 +12,7 @@ import KillWatcher from '../components/KillWatcher';
 import Military from '../components/Military';
 import Economy from '../components/Economy';
 import Members from '../components/Members';
+import Inbox from '../components/Inbox';
 
 const EMPTY_FORM = {
   allianceName: '',
@@ -20,6 +21,16 @@ const EMPTY_FORM = {
   botCommandsChannelId: '',
   killFeedChannelId: '',
 };
+
+// Dashboard views — shared by the desktop sidebar and the mobile bottom bar.
+const NAV = [
+  { key: 'setup', label: 'Server Setup', short: 'Setup', icon: '⚙️' },
+  { key: 'kills', label: 'Kill Watcher', short: 'Kills', icon: '⚔️' },
+  { key: 'military', label: 'Military', short: 'Military', icon: '🎯' },
+  { key: 'economy', label: 'Economy', short: 'Economy', icon: '💰' },
+  { key: 'members', label: 'Members', short: 'Members', icon: '👥' },
+  { key: 'inbox', label: 'Inbox', short: 'Inbox', icon: '📥' },
+];
 
 const formFromSettings = (settings) => ({
   allianceName: settings?.allianceName && settings.allianceName !== 'None' ? settings.allianceName : '',
@@ -55,6 +66,7 @@ const Dashboard = () => {
 
   const [channels, setChannels] = useState([]);
   const [channelsLoading, setChannelsLoading] = useState(false);
+  const [inboxCount, setInboxCount] = useState(0);
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
@@ -89,6 +101,16 @@ const Dashboard = () => {
     }
   }, []);
 
+  const loadInboxCount = useCallback(async (guildId) => {
+    try {
+      const data = await apiFetch(`/guilds/${guildId}/inbox`);
+      const c = data.counts || {};
+      setInboxCount((c.regears || 0) + (c.applications || 0));
+    } catch {
+      setInboxCount(0);
+    }
+  }, []);
+
   useEffect(() => {
     if (!loggedIn) return;
     let cancelled = false;
@@ -107,7 +129,11 @@ const Dashboard = () => {
     setNotice(null);
     setForm(formFromSettings(guild.settings));
     setChannels([]);
-    if (guild.botPresent) loadChannels(guild.id);
+    setInboxCount(0);
+    if (guild.botPresent) {
+      loadChannels(guild.id);
+      loadInboxCount(guild.id);
+    }
   };
 
   const addBot = () => {
@@ -174,11 +200,49 @@ const Dashboard = () => {
     : 'https://cdn.discordapp.com/embed/avatars/0.png';
   const displayName = user?.global_name || user?.username || 'Player';
 
+  const openView = (key) => {
+    setView(key);
+    if (key === 'inbox' && selectedId) loadInboxCount(selectedId);
+  };
+
   return (
     <div className="w-full min-h-screen bg-[#030303] pt-20">
-      <div className="w-full px-4 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
-        {/* Sidebar */}
-        <aside className="lg:w-72 flex-shrink-0">
+      {/* Mobile / tablet bar — replaces the sidebar on small screens */}
+      <div className="lg:hidden sticky top-20 z-30 bg-[#0a0a0a]/95 backdrop-blur border-b border-white/10">
+        <div className="px-3 sm:px-4 py-3 flex items-center gap-2 sm:gap-3">
+          <img
+            src={avatarUrl}
+            alt={displayName}
+            className="w-9 h-9 rounded-full border border-white/10 flex-shrink-0"
+            onError={(e) => { e.currentTarget.src = 'https://cdn.discordapp.com/embed/avatars/0.png'; }}
+          />
+          <select
+            value={selectedId || ''}
+            onChange={(e) => {
+              const g = guilds.find((x) => x.id === e.target.value);
+              if (g) selectGuild(g);
+            }}
+            className="flex-1 min-w-0 bg-[#030303] border border-white/10 rounded-xl px-3 py-2 text-white text-sm focus:outline-none focus:border-[#e62b1e] transition-colors"
+          >
+            <option value="">Select a server…</option>
+            {guilds.map((g) => (
+              <option key={g.id} value={g.id}>
+                {g.name}{g.botPresent ? (g.configured ? ' ✓' : ' ⚙') : ' — no bot'}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={logout}
+            className="px-3 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest text-red-400 border border-white/10 hover:bg-red-950/40 transition-colors flex-shrink-0"
+          >
+            Exit
+          </button>
+        </div>
+      </div>
+
+      <div className="w-full px-3 sm:px-4 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+        {/* Sidebar (desktop only) */}
+        <aside className="hidden lg:block lg:w-72 flex-shrink-0">
           <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-4 lg:sticky lg:top-24">
             <div className="flex items-center gap-3 pb-4 mb-4 border-b border-white/10">
               <img
@@ -228,46 +292,25 @@ const Dashboard = () => {
 
             {selected && (
               <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-2">
-                <button
-                  onClick={() => setView('setup')}
-                  className={`text-left px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
-                    view === 'setup' ? 'bg-red-950/40 border-[#e62b1e] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  ⚙️ Server Setup
-                </button>
-                <button
-                  onClick={() => setView('kills')}
-                  className={`text-left px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
-                    view === 'kills' ? 'bg-red-950/40 border-[#e62b1e] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  ⚔️ Kill Watcher
-                </button>
-                <button
-                  onClick={() => setView('military')}
-                  className={`text-left px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
-                    view === 'military' ? 'bg-red-950/40 border-[#e62b1e] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  🎯 Military
-                </button>
-                <button
-                  onClick={() => setView('economy')}
-                  className={`text-left px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
-                    view === 'economy' ? 'bg-red-950/40 border-[#e62b1e] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  💰 Economy
-                </button>
-                <button
-                  onClick={() => setView('members')}
-                  className={`text-left px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
-                    view === 'members' ? 'bg-red-950/40 border-[#e62b1e] text-white' : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  👥 Members
-                </button>
+                {NAV.map((item) => (
+                  <button
+                    key={item.key}
+                    onClick={() => openView(item.key)}
+                    className={`flex items-center gap-2 text-left px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors border ${
+                      view === item.key
+                        ? 'bg-red-950/40 border-[#e62b1e] text-white'
+                        : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span>{item.icon}</span>
+                    <span>{item.label}</span>
+                    {item.key === 'inbox' && inboxCount > 0 && (
+                      <span className="ml-auto min-w-[20px] h-5 px-1.5 rounded-full bg-[#e62b1e] text-white text-[10px] font-black flex items-center justify-center">
+                        {inboxCount}
+                      </span>
+                    )}
+                  </button>
+                ))}
               </div>
             )}
 
@@ -288,7 +331,7 @@ const Dashboard = () => {
         </aside>
 
         {/* Content */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 pb-24 lg:pb-6">
           {error && (
             <div className="mb-6 flex items-center justify-between gap-4 bg-red-950/30 border border-red-500/30 rounded-xl px-5 py-4">
               <p className="text-red-300 text-sm">{error}</p>
@@ -446,8 +489,39 @@ const Dashboard = () => {
               <Members guild={selected} />
             </div>
           )}
+
+          {selected && view === 'inbox' && (
+            <div key={`${selected.id}-inbox`} className="animate-fade-in">
+              <Inbox guildId={selected.id} onReviewed={() => setInboxCount((c) => Math.max(0, c - 1))} />
+            </div>
+          )}
         </main>
       </div>
+
+      {/* Mobile bottom navigation */}
+      {selected && (
+        <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0a0a0a]/95 backdrop-blur border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
+          <div className="grid grid-cols-6">
+            {NAV.map((item) => (
+              <button
+                key={item.key}
+                onClick={() => openView(item.key)}
+                className={`relative flex flex-col items-center justify-center gap-1 py-2.5 transition-colors ${
+                  view === item.key ? 'text-[#e62b1e]' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                <span className="text-lg leading-none">{item.icon}</span>
+                <span className="text-[9px] font-bold uppercase tracking-tight leading-none">{item.short}</span>
+                {item.key === 'inbox' && inboxCount > 0 && (
+                  <span className="absolute top-1 right-1/2 translate-x-4 min-w-[16px] h-4 px-1 rounded-full bg-[#e62b1e] text-white text-[9px] font-black flex items-center justify-center">
+                    {inboxCount > 9 ? '9+' : inboxCount}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </nav>
+      )}
     </div>
   );
 };

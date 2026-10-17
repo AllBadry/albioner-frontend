@@ -10,6 +10,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { apiFetch } from '../api';
 import { number, silver, itemImage } from '../utils/format';
 import { fetchBattleReport, peekBattleReport } from '../utils/battleCache';
+import { getSelectedBattle, setSelectedBattle } from '../utils/selectedBattle';
 
 const itemKey = (player, d, i) => `${player}|${d}|${i}`;
 const storeKey = (guildId, id) => `regear:${guildId}:${id}`;
@@ -83,9 +84,12 @@ const Regear = ({ guild, guildId }) => {
         if (cancelled) return;
         const list = res.battles || [];
         setHistory(list);
-        if (list[0]) {
-          setBattleId(String(list[0].battleId));
-          loadReport(String(list[0].battleId));
+        // Re-open the battle the admin last inspected, else the newest one.
+        const stored = getSelectedBattle(guildId);
+        const pick = list.find((b) => String(b.battleId) === stored) || list[0];
+        if (pick) {
+          setBattleId(String(pick.battleId));
+          loadReport(String(pick.battleId));
         }
       } catch (err) {
         if (!cancelled) setError(err.message);
@@ -152,7 +156,7 @@ const Regear = ({ guild, guildId }) => {
             <span className="block text-gray-400 text-xs font-bold uppercase tracking-widest mb-1.5">Battle</span>
             <select
               value={battleId}
-              onChange={(e) => { setBattleId(e.target.value); loadReport(e.target.value); }}
+              onChange={(e) => { setBattleId(e.target.value); setSelectedBattle(guildId, e.target.value); loadReport(e.target.value); }}
               className="w-full bg-[#030303] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#e62b1e] transition-colors"
             >
               <option value="">Choose a battle…</option>

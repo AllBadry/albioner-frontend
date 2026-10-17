@@ -9,6 +9,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { apiFetch } from '../api';
 import { number, timeAgo, silver, itemImage } from '../utils/format';
 import { fetchBattleReport, peekBattleReport } from '../utils/battleCache';
+import { getSelectedBattle, setSelectedBattle } from '../utils/selectedBattle';
 import Regear from './Regear';
 
 const TYPE_ICON = { castle: '🏰', territory: '⚔️', hideout: '🛡️' };
@@ -520,12 +521,19 @@ function BattleTab({ guildId }) {
     (async () => {
       await Promise.resolve();
       loadHistory();
+      const stored = getSelectedBattle(guildId);
       const tick = async () => {
         const res = await loadLatest();
         if (cancelled) return;
-        if (!didInitialLookup && res?.found && res.battle) {
-          didInitialLookup = true;
-          lookup(res.battle.id);
+        if (!didInitialLookup) {
+          if (stored) {
+            didInitialLookup = true;
+            setPicked(stored);
+            lookup(stored);
+          } else if (res?.found && res.battle) {
+            didInitialLookup = true;
+            lookup(res.battle.id);
+          }
         }
         if (res?.ongoing) timer = setTimeout(tick, 15000);
       };
@@ -535,16 +543,19 @@ function BattleTab({ guildId }) {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [loadLatest, loadHistory, lookup]);
+  }, [guildId, loadLatest, loadHistory, lookup]);
 
   const runManual = (e) => {
     e.preventDefault();
+    if (!battleId) return;
+    setSelectedBattle(guildId, battleId);
     lookup(battleId);
   };
 
   const onPick = (e) => {
     const id = e.target.value;
     setPicked(id);
+    setSelectedBattle(guildId, id);
     if (id) lookup(id);
   };
 
@@ -725,7 +736,9 @@ function AuditTab({ guildId }) {
         if (!active) return;
         const list = b.battles || [];
         setBattles(list);
-        setBattleId((cur) => cur || String(list[0]?.battleId || ''));
+        const stored = getSelectedBattle(guildId);
+        const storedBattle = list.find((x) => String(x.battleId) === stored);
+        setBattleId((cur) => cur || String(storedBattle?.battleId || list[0]?.battleId || ''));
         const ctaList = c.ctas || [];
         setCtas(ctaList);
         setCtaId((cur) => cur || String(ctaList[0]?.id || ''));
@@ -767,7 +780,7 @@ function AuditTab({ guildId }) {
           <label className="space-y-2">
             <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">Battle</span>
             {battles.length > 0 ? (
-              <select value={battleId} onChange={(e) => setBattleId(e.target.value)} className={inputCls}>
+              <select value={battleId} onChange={(e) => { setBattleId(e.target.value); setSelectedBattle(guildId, e.target.value); }} className={inputCls}>
                 {battles.map((b) => (
                   <option key={b.battleId} value={b.battleId}>
                     {b.clusterName || 'Unknown'} · {new Date(b.startTime).toLocaleString()}
