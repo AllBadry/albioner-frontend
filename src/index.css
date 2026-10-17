@@ -38,3 +38,29 @@ html[dir="rtl"] div {
 html[dir="rtl"] .rtl-flip-x {
   scale: -1 1;
 }
+
+/* Custom scrollbar to match site theme */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #050505;
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #e62b1e, #a81d14);
+  border-radius: 8px;
+  border: 2px solid #050505;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #ff3b2b, #e62b1e);
+}
+
+/* Firefox scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #e62b1e #050505;
+}
