@@ -90,7 +90,7 @@ export async function fetchBattleReport(guildId, battleId, { force = false } = {
 
   const res = await apiFetch(`/guilds/${guildId}/military/battle-report`, {
     method: 'POST',
-    body: JSON.stringify({ battleId }),
+    body: JSON.stringify({ battleId, force }),
   });
 
   // Only finished battles are stable enough to cache.
