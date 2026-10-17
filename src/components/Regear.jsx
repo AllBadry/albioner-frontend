@@ -9,6 +9,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { apiFetch } from '../api';
 import { number, silver, itemImage } from '../utils/format';
+import { fetchBattleReport, peekBattleReport } from '../utils/battleCache';
 
 const itemKey = (player, d, i) => `${player}|${d}|${i}`;
 const storeKey = (guildId, id) => `regear:${guildId}:${id}`;
@@ -46,28 +47,31 @@ const Regear = ({ guild, guildId }) => {
   const [error, setError] = useState('');
   const [excluded, setExcluded] = useState(() => new Set());
 
-  const loadReport = useCallback(async (id) => {
-    if (!id) return;
-    setLoading(true);
-    setError('');
+  const loadExcluded = useCallback((id) => {
     try {
-      const res = await apiFetch(`/guilds/${guildId}/military/battle-report`, {
-        method: 'POST',
-        body: JSON.stringify({ battleId: id }),
-      });
+      setExcluded(new Set(JSON.parse(localStorage.getItem(storeKey(guildId, id)) || '[]')));
+    } catch {
+      setExcluded(new Set());
+    }
+  }, [guildId]);
+
+  const loadReport = useCallback(async (id, force = false) => {
+    if (!id) return;
+    setError('');
+    loadExcluded(id);
+    // Serve the memoised report instantly; only hit the API on a miss/refresh.
+    const cached = force ? null : peekBattleReport(guildId, id);
+    if (cached) setData(cached);
+    setLoading(!cached);
+    try {
+      const res = await fetchBattleReport(guildId, id, { force });
       setData(res);
-      try {
-        const raw = JSON.parse(localStorage.getItem(storeKey(guildId, id)) || '[]');
-        setExcluded(new Set(raw));
-      } catch {
-        setExcluded(new Set());
-      }
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, [guildId]);
+  }, [guildId, loadExcluded]);
 
   useEffect(() => {
     let cancelled = false;
@@ -159,6 +163,15 @@ const Regear = ({ guild, guildId }) => {
               ))}
             </select>
           </label>
+          <button
+            type="button"
+            onClick={() => loadReport(battleId, true)}
+            disabled={!battleId || loading}
+            title="Re-fetch this battle's report from scratch"
+            className="px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ↻ Refresh
+          </button>
           {allKeys.length > 0 && (
             <>
               <button onClick={() => setAll(allKeys, false)} className="px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors">

@@ -8,6 +8,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { apiFetch } from '../api';
 import { number, timeAgo, silver, itemImage } from '../utils/format';
+import { fetchBattleReport, peekBattleReport } from '../utils/battleCache';
 import Regear from './Regear';
 
 const TYPE_ICON = { castle: '🏰', territory: '⚔️', hideout: '🛡️' };
@@ -207,6 +208,12 @@ const BattlePlayers = ({ players, region, battleId }) => {
                   <td className="text-right text-gray-300 tabular-nums">{number.format(p.killFame)}</td>
                   <td className="text-right text-amber-400/80 tabular-nums">{p.lostValue ? silver(p.lostValue) : '—'}</td>
                   <td className="text-right">
+                    <button
+                      onClick={() => setSelected(p)}
+                      className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
+                    >
+                      View
+          </button>
                     <button
                       onClick={() => setSelected(p)}
                       className="px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors"
@@ -486,17 +493,15 @@ function BattleTab({ guildId }) {
     }
   }, [guildId]);
 
-  // Fetch one battle's full report by id (summary + per-player gear/prices).
-  const lookup = useCallback(async (id) => {
+  const lookup = useCallback(async (id, force = false) => {
     if (!id) return;
-    setLoading(true);
     setError('');
-    setManual(null);
+    // Render cached result instantly if available.
+    const cached = force ? null : peekBattleReport(guildId, id);
+    if (cached) setManual(cached);
+    setLoading(!cached);
     try {
-      const res = await apiFetch(`/guilds/${guildId}/military/battle-report`, {
-        method: 'POST',
-        body: JSON.stringify({ battleId: id }),
-      });
+      const res = await fetchBattleReport(guildId, id, { force });
       setManual(res);
     } catch (err) {
       setError(err.message);
@@ -580,7 +585,7 @@ function BattleTab({ guildId }) {
         {autoBattle && <BattleCard battle={autoBattle} region={auto.region} ongoing={auto.ongoing} />}
         {autoBattle && (
           <button
-            onClick={() => lookup(autoBattle.id)}
+            onClick={() => lookup(autoBattle.id, true)}
             className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition"
           >
             View players
@@ -614,14 +619,25 @@ function BattleTab({ guildId }) {
         )}
 
         {history.length > 0 && (
-          <select value={picked} onChange={onPick} className={inputCls}>
-            <option value="">Choose a battle…</option>
-            {history.map((b) => (
-              <option key={b.battleId} value={b.battleId}>
-                {`#${b.battleId} · ${b.clusterName || b.region || 'unknown'} · ${b.startTime ? new Date(b.startTime).toLocaleString() : ''} · ${number.format(b.totalKills)} kills${b.ongoing ? ' · Live' : ''}`}
-              </option>
-            ))}
-          </select>
+          <div className="flex flex-wrap gap-3">
+            <select value={picked} onChange={onPick} className={`${inputCls} flex-1 min-w-[240px]`}>
+              <option value="">Choose a battle…</option>
+              {history.map((b) => (
+                <option key={b.battleId} value={b.battleId}>
+                  {`#${b.battleId} · ${b.clusterName || b.region || 'unknown'} · ${b.startTime ? new Date(b.startTime).toLocaleString() : ''} · ${number.format(b.totalKills)} kills${b.ongoing ? ' · Live' : ''}`}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => picked && lookup(picked, true)}
+              disabled={!picked || loading}
+              title="Re-fetch the selected battle from scratch"
+              className="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              ↻ Refresh
+            </button>
+          </div>
         )}
         {loading && <p className="text-gray-500 text-sm">Loading battle data…</p>}
       </div>
@@ -643,6 +659,15 @@ function BattleTab({ guildId }) {
             className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-white bg-[#e62b1e] hover:brightness-110 transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {loading ? 'Analyzing…' : 'Analyze'}
+          </button>
+          <button
+            type="button"
+            onClick={() => lookup(battleId.trim(), true)}
+            disabled={loading || !battleId.trim()}
+            title="Re-fetch the selected battle from scratch"
+            className="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-widest text-gray-300 hover:text-white border border-white/10 hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            ↻ Refresh
           </button>
         </div>
       </form>
