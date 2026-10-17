@@ -231,6 +231,7 @@ export default {
       setup: 'Server Setup',
       kills: 'Kill Watcher',
       military: 'Military',
+      danger: 'Dangerous Lands',
       economy: 'Economy',
       members: 'Members',
       inbox: 'Inbox',
@@ -435,6 +436,22 @@ export default {
       hm: '{h}h {m}m',
       m: '{m}m',
     },
+  },
+
+  danger: {
+    title: 'Dangerous Lands',
+    subtitle: 'clusters where your guild bleeds and where the fighting is hottest',
+    setGuildName: 'Set a tracked guild name in Server Setup first.',
+    tracked: 'Tracked guild',
+    killZonesTitle: 'Kill zones for us',
+    killZonesDesc: 'Lands where your members die the most — avoid or reinforce these.',
+    deaths: 'deaths',
+    lost: 'lost',
+    battles: 'battles',
+    hotZonesTitle: 'Hot zones overall',
+    hotZonesDesc: 'Lands with the highest total kill count — expect heavy fighting.',
+    kills: 'kills',
+    fame: 'fame',
   },
 
   economy: {

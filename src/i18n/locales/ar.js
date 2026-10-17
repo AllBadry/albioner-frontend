@@ -188,12 +188,13 @@ export default {
 
   dashboard: {
     nav: {
-      setup: 'إعداد السيرفر',
-      kills: 'رادار القتلى',
+      setup: 'إعداد الخادم',
+      kills: 'مراقبة القتل',
       military: 'العسكرية',
+      danger: 'الأراضي الخطرة',
       economy: 'الاقتصاد',
       members: 'الأعضاء',
-      inbox: 'الصندوق',
+      inbox: 'صندوق الوارد',
     },
     navShort: {
       setup: 'الإعداد',
@@ -390,6 +391,22 @@ export default {
       hm: '{h}س {m}د',
       m: '{m}د',
     },
+  },
+
+  danger: {
+    title: 'الأراضي الخطرة',
+    subtitle: 'المناطق التي يموت فيها أعضاؤك أكثر والمناطق ذات أعلى عدد قتل',
+    setGuildName: 'حدد اسم الرابطة المتابعة في إعداد الخادم أولاً.',
+    tracked: 'الرابطة المتابعة',
+    killZonesTitle: 'مناطق قتلنا',
+    killZonesDesc: 'الأماكن التي يموت فيها أعضاؤك أكثر — تجنبها أو عززها.',
+    deaths: 'وفيات',
+    lost: 'خسائر',
+    battles: 'معارك',
+    hotZonesTitle: 'مناطق ساخنة',
+    hotZonesDesc: 'الأماكن ذات أعلى عدد قتل إجمالي — توقع قتالاً شديداً.',
+    kills: 'قتل',
+    fame: 'شهرة',
   },
 
   economy: {

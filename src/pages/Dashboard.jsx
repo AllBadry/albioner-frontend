@@ -13,6 +13,7 @@ import LanguageSwitcher from '../components/layout/LanguageSwitcher';
 import KillWatcher from '../components/KillWatcher';
 import Military from '../components/Military';
 import Economy from '../components/Economy';
+import DangerousLands from '../components/DangerousLands';
 import Members from '../components/Members';
 import Inbox from '../components/Inbox';
 
@@ -27,12 +28,13 @@ const EMPTY_FORM = {
 
 // Dashboard views — shared by the desktop sidebar and the mobile bottom bar.
 const NAV = [
-  { key: 'setup', icon: '⚙️' },
-  { key: 'kills', icon: '⚔️' },
-  { key: 'military', icon: '🎯' },
-  { key: 'economy', icon: '💰' },
-  { key: 'members', icon: '👥' },
-  { key: 'inbox', icon: '📥' },
+  { key: 'setup', icon: '??' },
+  { key: 'kills', icon: '??' },
+  { key: 'military', icon: '??' },
+  { key: 'danger', icon: '??' },
+  { key: 'economy', icon: '??' },
+  { key: 'members', icon: '??' },
+  { key: 'inbox', icon: '??' },
 ];
 
 const formFromSettings = (settings) => ({
@@ -490,6 +492,12 @@ const Dashboard = () => {
             </div>
           )}
 
+          {selected && view === 'danger' && (
+            <div key={`${selected.id}-danger`} className="animate-fade-in">
+              <DangerousLands guild={selected} />
+            </div>
+          )}
+
           {selected && view === 'economy' && (
             <div key={`${selected.id}-economy`} className="animate-fade-in">
               <Economy guild={selected} />
@@ -513,7 +521,7 @@ const Dashboard = () => {
       {/* Mobile bottom navigation */}
       {selected && (
         <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0a0a0a]/95 backdrop-blur border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
-          <div className="grid grid-cols-6">
+          <div className="grid grid-cols-7">
             {NAV.map((item) => (
               <button
                 key={item.key}
