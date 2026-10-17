@@ -49,9 +49,9 @@ export default {
   },
 
   hero: {
-    line1: 'ألبيون',
-    line2: 'التحالف',
-    line3: 'المدير',
+    line1: 'مدير',
+    line2: 'تحالف',
+    line3: 'ألبيون',
     freeBot: 'بوت مجاني ©',
     getStarted: 'ابدأ الآن',
     programmer: 'المبرمج',
