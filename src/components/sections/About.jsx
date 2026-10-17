@@ -4,7 +4,8 @@ import { useI18n } from '../../i18n';
 
 const About = () => {
   const [activeFeature, setActiveFeature] = useState(null);
-  const { t } = useI18n();
+  const { t, dir } = useI18n();
+  const rtl = dir === 'rtl';
 
   const features = [
     {
@@ -28,25 +29,25 @@ const About = () => {
     <section className="relative w-full min-h-screen bg-[#03030371] overflow-hidden flex flex-col lg:flex-row items-center px-6 lg:px-16 pt-24 lg:pt-0">
       
       {/* 
-        الجديد: صورة المدينة على اليسار 
-        تم جعلها كخلفية متلاشية (Faded Background) لكي لا تتعارض مع النصوص
+        صورة المدينة 
       */}
-      {/* 
-        صورة المدينة على اليسار 
-      */}
-      <div className="absolute left-0 top-0 h-full w-full lg:w-[80%] z-0 pointer-events-none animate-fade-in">
+      <div className={`absolute top-0 h-full w-full lg:w-[80%] z-0 pointer-events-none animate-fade-in ${rtl ? 'right-0' : 'left-0'}`}>
         <img 
           src="/cityyyy.jpg"
           alt="Alliance Town" 
           // 1. أضفنا `object-[30%_center]` لسحب الصورة وإظهار الجزء المناسب منها
           className={`object-cover object-[30%_center] w-full h-full opacity-90 transition-transform duration-1000 ${activeFeature ? 'scale-105' : 'scale-100'}`}
           style={{
-            // 2. عدلنا التدرج ليتناسب مع العرض الجديد (يبدأ التلاشي من 40% وينتهي عند 90%)
-            maskImage: 'linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%)',
-            WebkitMaskImage: 'linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%)'
+            // 2. عدلنا التدرج ليتناسب مع العرض الجديد
+            maskImage: rtl
+              ? 'linear-gradient(to left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%)'
+              : 'linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%)',
+            WebkitMaskImage: rtl
+              ? 'linear-gradient(to left, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%)'
+              : 'linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 90%)'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#030303]/30 via-[#030303]/70 to-[#030303]"></div>
+        <div className={`absolute inset-0 ${rtl ? 'bg-gradient-to-l from-[#030303]/30 via-[#030303]/70 to-[#030303]' : 'bg-gradient-to-r from-[#030303]/30 via-[#030303]/70 to-[#030303]'}`}></div>
       </div>
 
       {/* Ambient Fire Sparks (الشرارات النارية) */}
@@ -57,13 +58,13 @@ const About = () => {
       </div>
 
       {/* Left Section: Text & Interactive Features */}
-      <div className="relative z-10 flex flex-col justify-center h-full w-full lg:w-1/2 mt-10 lg:mt-0 animate-slide-up pl-0 lg:pl-8">
+      <div className={`relative z-10 flex flex-col justify-center h-full w-full lg:w-1/2 mt-10 lg:mt-0 animate-slide-up ${rtl ? 'pe-0 lg:pe-8' : 'pl-0 lg:pl-8'}`}>
         
-        <div className="text-gray-400 text-xs font-bold tracking-widest uppercase mb-4 drop-shadow-md">
+        <div className={`text-gray-400 text-xs font-bold uppercase mb-4 drop-shadow-md ${rtl ? 'tracking-normal' : 'tracking-widest'}`}>
           <p>{t('about.tag')}</p>
         </div>
 
-        <h2 className="text-[#e62b1e] font-black uppercase leading-[0.9] tracking-tighter text-[60px] sm:text-[80px] lg:text-[110px] transform hover:scale-[1.02] transition-transform duration-300 drop-shadow-lg">
+        <h2 className={`text-[#e62b1e] font-black uppercase leading-[0.9] text-[60px] sm:text-[80px] lg:text-[110px] transform hover:scale-[1.02] transition-transform duration-300 drop-shadow-lg ${rtl ? 'tracking-normal' : 'tracking-tighter'}`}>
           {t('about.titleA')} <br /> {t('about.titleB')}
         </h2>
         
@@ -80,7 +81,9 @@ const About = () => {
               onMouseLeave={() => setActiveFeature(null)}
               className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer backdrop-blur-sm ${
                 activeFeature === feature.id
-                  ? 'bg-red-950/40 border-[#e62b1e] translate-x-3 shadow-[0_0_15px_rgba(230,43,30,0.3)]'
+                  ? rtl
+                    ? 'bg-red-950/40 border-[#e62b1e] -translate-x-3 shadow-[0_0_15px_rgba(230,43,30,0.3)]'
+                    : 'bg-red-950/40 border-[#e62b1e] translate-x-3 shadow-[0_0_15px_rgba(230,43,30,0.3)]'
                   : 'bg-[#030303]/40 border-white/10 hover:border-white/30'
               }`}
             >
@@ -88,7 +91,7 @@ const About = () => {
                 <span className={`w-3.5 h-3.5 bg-[#e62b1e] transform rotate-45 transition-transform duration-500 shadow-md ${
                   activeFeature === feature.id ? 'scale-125 rotate-[135deg]' : ''
                 }`}></span>
-                <h3 className="text-white font-bold tracking-widest uppercase text-base lg:text-lg drop-shadow-md">
+                <h3 className={`text-white font-bold uppercase text-base lg:text-lg drop-shadow-md ${rtl ? 'tracking-normal' : 'tracking-widest'}`}>
                   {feature.title}
                 </h3>
               </div>
@@ -106,23 +109,23 @@ const About = () => {
       </div>
 
       {/* Right Section: Giant Interactive Duck */}
-      <div className="absolute right-0 bottom-0 h-[65%] lg:h-full w-full lg:w-1/2 flex justify-end items-end z-0 pointer-events-none animate-slide-in-right">
+      <div className={`absolute bottom-0 h-[65%] lg:h-full w-full lg:w-1/2 flex justify-end items-end z-0 pointer-events-none animate-slide-in-right ${rtl ? 'left-0 justify-start' : 'right-0 justify-end'}`}>
         
         <div className="relative h-full w-full flex justify-end items-end">
           
           {/* Fire Glow */}
-          <div className={`absolute right-12 bottom-12 w-[80%] h-[80%] rounded-full bg-gradient-to-tr from-red-600/10 to-amber-500/10 blur-[120px] transition-opacity duration-700 ${
-            activeFeature ? 'opacity-100 scale-105' : 'opacity-50'
-          }`}></div>
+          <div className={`absolute bottom-12 w-[80%] h-[80%] rounded-full bg-gradient-to-tr from-red-600/10 to-amber-500/10 blur-[120px] transition-opacity duration-700 ${
+            rtl ? 'left-12' : 'right-12'
+          } ${activeFeature ? 'opacity-100 scale-105' : 'opacity-50'}`}></div>
 
           {/* Duck Image */}
           <img 
             src="./duck3.png"
             alt="Albioner Guardian Duck" 
-            className={`object-contain h-[90%] lg:h-[95%] xl:h-[108%] max-w-none transform transition-all duration-700 translate-y-16 lg:translate-y-28 ${
+            className={`object-contain h-[90%] lg:h-[95%] xl:h-[108%] max-w-none transform transition-all duration-700 translate-y-16 lg:translate-y-28 rtl-flip-x ${
               activeFeature 
-                ? 'scale-[1.04] -translate-x-12 lg:-translate-x-24 rotate-[1deg] brightness-110 drop-shadow-[0_0_35px_rgba(230,43,30,0.25)]' 
-                : '-translate-x-8 lg:-translate-x-16 rotate-0'
+                ? (rtl ? 'scale-[1.04] translate-x-12 lg:translate-x-24 rotate-[1deg] brightness-110 drop-shadow-[0_0_35px_rgba(230,43,30,0.25)]' : 'scale-[1.04] -translate-x-12 lg:-translate-x-24 rotate-[1deg] brightness-110 drop-shadow-[0_0_35px_rgba(230,43,30,0.25)]')
+                : (rtl ? 'translate-x-8 lg:translate-x-16 rotate-0' : '-translate-x-8 lg:-translate-x-16 rotate-0')
             }`}
           />
           
