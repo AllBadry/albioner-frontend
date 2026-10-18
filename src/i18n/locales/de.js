@@ -96,6 +96,11 @@ export default {
     headingB: 'ANLEITUNG',
     intro:
       'Dein vollständiger Leitfaden für Albioner. Alle Befehle sind auf Englisch, aber der Bot kann in 10 verschiedenen Sprachen antworten.',
+    groupTitle: 'Wie möchtest du Albioner nutzen?',
+    groupDiscord: 'Auf Discord',
+    groupDiscordDesc: 'Richte den Bot auf deinem Server ein, verifiziere Mitglieder und führe Befehle aus.',
+    groupWeb: 'Im Web',
+    groupWebDesc: 'Verwalte alles im Browser — ganz ohne Befehle.',
     tabs: {
       setup: '🚀 Ersteinrichtung',
       verification: '🔒 Verifizierung',

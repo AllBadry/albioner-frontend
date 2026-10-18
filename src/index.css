@@ -93,3 +93,16 @@ html[dir="rtl"] .rtl-flip-x {
   scrollbar-width: thin;
   scrollbar-color: #e62b1e #050505;
 }
+
+/* Hide the scrollbar entirely while keeping the element scrollable.
+   Used for small popovers (e.g. the language picker). */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}

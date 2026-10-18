@@ -2,27 +2,25 @@ import { useState } from 'react';
 import { useI18n } from '../../i18n';
 
 const Tutorial = () => {
+  const { t, dir } = useI18n();
+  const rtl = dir === 'rtl';
+  const [group, setGroup] = useState('discord');
   const [activeTab, setActiveTab] = useState('setup');
-  const { t } = useI18n();
 
-  const tabs = [
-    { id: 'setup', title: t('tutorial.tabs.setup') },
-    { id: 'verification', title: t('tutorial.tabs.verification') },
-    { id: 'commands', title: t('tutorial.tabs.commands') },
-    { id: 'auto', title: t('tutorial.tabs.auto') },
-    { id: 'web', title: t('tutorial.tabs.web') },
+  // ---- Navigation -----------------------------------------------------------
+  const groups = [
+    { id: 'discord', icon: '🤖', title: t('tutorial.groupDiscord'), desc: t('tutorial.groupDiscordDesc') },
+    { id: 'web', icon: '🌐', title: t('tutorial.groupWeb'), desc: t('tutorial.groupWebDesc') },
   ];
 
-  const webBlocks = [
-    { title: t('tutorial.web.loginTitle'), body: t('tutorial.web.loginBody') },
-    { title: t('tutorial.web.setupTitle'), body: t('tutorial.web.setupBody') },
-    { title: t('tutorial.web.killsTitle'), body: t('tutorial.web.killsBody') },
-    { title: t('tutorial.web.militaryTitle'), body: t('tutorial.web.militaryBody') },
-    { title: t('tutorial.web.economyTitle'), body: t('tutorial.web.economyBody') },
-    { title: t('tutorial.web.membersTitle'), body: t('tutorial.web.membersBody') },
-    { title: t('tutorial.web.inboxTitle'), body: t('tutorial.web.inboxBody') },
+  const discordTabs = [
+    { id: 'setup', icon: '🚀', title: t('tutorial.tabs.setup') },
+    { id: 'verification', icon: '🔒', title: t('tutorial.tabs.verification') },
+    { id: 'commands', icon: '💻', title: t('tutorial.tabs.commands') },
+    { id: 'auto', icon: '🤖', title: t('tutorial.tabs.auto') },
   ];
 
+  // ---- Content --------------------------------------------------------------
   const setupBlocks = [
     {
       title: t('tutorial.setup.b1title'),
@@ -55,147 +53,205 @@ const Tutorial = () => {
     desc: t(`tutorial.auto.c${n}desc`),
   }));
 
+  const webBlocks = [
+    { title: t('tutorial.web.loginTitle'), body: t('tutorial.web.loginBody'), icon: '🔑' },
+    { title: t('tutorial.web.setupTitle'), body: t('tutorial.web.setupBody'), icon: '⚙️' },
+    { title: t('tutorial.web.killsTitle'), body: t('tutorial.web.killsBody'), icon: '📡' },
+    { title: t('tutorial.web.militaryTitle'), body: t('tutorial.web.militaryBody'), icon: '⚔️' },
+    { title: t('tutorial.web.economyTitle'), body: t('tutorial.web.economyBody'), icon: '💰' },
+    { title: t('tutorial.web.membersTitle'), body: t('tutorial.web.membersBody'), icon: '👥' },
+    { title: t('tutorial.web.inboxTitle'), body: t('tutorial.web.inboxBody'), icon: '📥' },
+  ];
+
+  const card = 'bg-[#030303] rounded-xl border border-white/5';
+
   return (
     <section className="relative w-full min-h-screen bg-[#030303] text-gray-300 flex flex-col items-center px-4 lg:px-16 pt-32 pb-20 animate-fade-in overflow-hidden">
 
-      <div className="absolute top-0 right-0 w-[60%] h-[400px] bg-[#e62b1e]/5 blur-[200px] rounded-full pointer-events-none"></div>
+      <div className="absolute top-0 end-0 w-[60%] h-[400px] bg-[#e62b1e]/5 blur-[200px] rounded-full pointer-events-none"></div>
 
-      <div className="w-full max-w-7xl mb-12 text-center lg:text-start z-10 animate-slide-up">
-        <h2 className="text-white font-black uppercase leading-[0.9] tracking-tighter text-[40px] sm:text-[60px] flex items-center justify-center lg:justify-start gap-6 drop-shadow-md">
+      {/* Header */}
+      <div className="w-full max-w-7xl mb-10 text-center z-10 animate-slide-up">
+        <h2 className="text-white font-black uppercase leading-[0.9] text-[40px] sm:text-[60px] flex items-center justify-center gap-4 drop-shadow-md">
           {t('tutorial.headingA')} <span className="text-[#e62b1e]">{t('tutorial.headingB')}</span>
         </h2>
-        <p className="mt-4 text-gray-400 font-medium max-w-2xl mx-auto lg:mx-0">
+        <p className="mt-4 text-gray-400 font-medium max-w-2xl mx-auto">
           {t('tutorial.intro')}
         </p>
       </div>
 
-      <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8 z-10">
-
-        {/* التبويبات الجانبية */}
-        <div className="w-full lg:w-1/4 flex flex-col gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`text-start px-6 py-4 rounded-xl font-bold uppercase tracking-widest transition-all duration-300 border ${
-                activeTab === tab.id
-                  ? 'bg-red-950/40 border-[#e62b1e] text-white translate-x-2'
-                  : 'bg-[#0a0a0a] border-white/5 text-gray-500 hover:border-white/20 hover:text-gray-300'
-              }`}
-            >
-              {tab.title}
-            </button>
-          ))}
-        </div>
-
-        {/* محتوى التبويبات */}
-        <div className="w-full lg:w-3/4 bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-10 shadow-2xl relative overflow-hidden min-h-[600px]">
-
-          {/* محتوى الإعداد الأولي */}
-          {activeTab === 'setup' && (
-            <div className="animate-fade-in space-y-8">
-              <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.setup.title')}</h3>
-              <p>{t('tutorial.setup.intro')}</p>
-
-              <div className="space-y-6">
-                {setupBlocks.map((block, i) => (
-                  <div key={i} className="bg-[#030303] p-5 rounded-lg border border-white/5">
-                    <h4 className="text-[#e62b1e] font-bold mb-2">{block.title}</h4>
-                    {block.intro && <p className="mb-3 text-sm">{block.intro}</p>}
-                    {block.commands && (
-                      <ul className="list-disc list-inside text-sm space-y-2 text-gray-400">
-                        {block.commands.map((c, j) => (
-                          <li key={j}>
-                            <code className="text-white bg-white/10 px-2 py-1 rounded">{c.code}</code> {c.text}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {block.body && <p className="text-sm text-gray-400">{block.body}</p>}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* محتوى التوثيق */}
-          {activeTab === 'verification' && (
-            <div className="animate-fade-in space-y-8">
-              <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.verification.title')}</h3>
-              <p>{t('tutorial.verification.intro')}</p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-[#030303] p-6 rounded-xl border border-white/5 border-s-4 border-s-blue-500">
-                  <h4 className="text-blue-400 font-bold mb-4 uppercase tracking-widest">{t('tutorial.verification.memberTitle')}</h4>
-                  <ol className="list-decimal list-inside space-y-3 text-sm text-gray-400">
-                    {verification.member.map((step, i) => <li key={i}>{step}</li>)}
-                  </ol>
-                </div>
-
-                <div className="bg-[#030303] p-6 rounded-xl border border-white/5 border-s-4 border-s-[#e62b1e]">
-                  <h4 className="text-[#e62b1e] font-bold mb-4 uppercase tracking-widest">{t('tutorial.verification.adminTitle')}</h4>
-                  <ol className="list-decimal list-inside space-y-3 text-sm text-gray-400">
-                    {verification.admin.map((step, i) => <li key={i}>{step}</li>)}
-                  </ol>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* محتوى الأوامر */}
-          {activeTab === 'commands' && (
-            <div className="animate-fade-in space-y-6">
-              <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.commands.title')}</h3>
-
-              <div className="space-y-4 max-h-[450px] overflow-y-auto pe-2 custom-scrollbar">
-                {commandGroups.map((group, i) => (
-                  <div key={i} className="bg-[#030303] p-5 rounded-lg border border-white/5">
-                    <h4 className={`${group.color} font-bold mb-3 flex items-center gap-2`}>{group.title}</h4>
-                    <ul className="space-y-3 text-sm">
-                      {group.items.map((item, j) => <li key={j}>{item}</li>)}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* الميزات التلقائية */}
-          {activeTab === 'auto' && (
-            <div className="animate-fade-in space-y-8">
-              <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.auto.title')}</h3>
-              <p>{t('tutorial.auto.intro')}</p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {autoCards.map((card, i) => (
-                  <div key={i} className="bg-[#030303] p-5 rounded-lg border border-white/5">
-                    <h4 className="text-white font-bold mb-2">{card.title}</h4>
-                    <p className="text-sm text-gray-400">{card.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Web Dashboard */}
-          {activeTab === 'web' && (
-            <div className="animate-fade-in space-y-8">
-              <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.web.title')}</h3>
-              <p>{t('tutorial.web.intro')}</p>
-
-              <div className="space-y-4 max-h-[520px] overflow-y-auto pe-2">
-                {webBlocks.map((block, i) => (
-                  <div key={i} className="bg-[#030303] p-5 rounded-lg border border-white/5">
-                    <h4 className="text-[#e62b1e] font-bold mb-2">{block.title}</h4>
-                    <p className="text-sm text-gray-400">{block.body}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
+      {/* Where do you want to use it? */}
+      <div className="w-full max-w-7xl z-10 mb-8">
+        <p className="text-center text-gray-500 text-xs font-bold uppercase mb-4">{t('tutorial.groupTitle')}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto">
+          {groups.map((g) => {
+            const active = group === g.id;
+            return (
+              <button
+                key={g.id}
+                onClick={() => setGroup(g.id)}
+                className={`text-start p-5 rounded-2xl border transition-all duration-300 flex items-start gap-4 ${
+                  active
+                    ? 'bg-red-950/40 border-[#e62b1e] shadow-[0_0_25px_rgba(230,43,30,0.2)]'
+                    : 'bg-[#0a0a0a] border-white/10 hover:border-white/25'
+                }`}
+              >
+                <span className="text-3xl leading-none">{g.icon}</span>
+                <span className="flex-1">
+                  <span className={`block font-black uppercase text-sm ${active ? 'text-white' : 'text-gray-300'}`}>{g.title}</span>
+                  <span className="block text-xs text-gray-500 mt-1 leading-relaxed">{g.desc}</span>
+                </span>
+                <span className={`mt-1 w-3 h-3 rounded-full shrink-0 ${active ? 'bg-[#e62b1e]' : 'bg-white/10'}`}></span>
+              </button>
+            );
+          })}
         </div>
       </div>
+
+      {/* Discord guide */}
+      {group === 'discord' && (
+        <div className="w-full max-w-7xl flex flex-col lg:flex-row gap-8 z-10">
+          {/* Sub-tabs */}
+          <div className="w-full lg:w-1/4 flex flex-col gap-2">
+            {discordTabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`text-start px-5 py-4 rounded-xl font-bold uppercase text-sm transition-all duration-300 border flex items-center gap-3 ${
+                  activeTab === tab.id
+                    ? `bg-red-950/40 border-[#e62b1e] text-white ${rtl ? '-translate-x-2' : 'translate-x-2'}`
+                    : 'bg-[#0a0a0a] border-white/5 text-gray-500 hover:border-white/20 hover:text-gray-300'
+                }`}
+              >
+                <span className="text-lg leading-none">{tab.icon}</span>
+                <span>{tab.title}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Content */}
+          <div className="w-full lg:w-3/4 bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-10 shadow-2xl relative overflow-hidden min-h-[600px]">
+
+            {activeTab === 'setup' && (
+              <div className="animate-fade-in space-y-6">
+                <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.setup.title')}</h3>
+                <p>{t('tutorial.setup.intro')}</p>
+
+                <div className="space-y-5">
+                  {setupBlocks.map((block, i) => (
+                    <div key={i} className={`${card} p-5`}>
+                      <h4 className="text-[#e62b1e] font-bold mb-2">{block.title}</h4>
+                      {block.intro && <p className="mb-3 text-sm">{block.intro}</p>}
+                      {block.commands && (
+                        <ul className="space-y-2 text-sm text-gray-400">
+                          {block.commands.map((c, j) => (
+                            <li key={j} className="flex flex-wrap items-center gap-2">
+                              <code className="text-white bg-white/10 px-2 py-1 rounded font-mono text-xs">{c.code}</code>
+                              <span>{c.text}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {block.body && <p className="text-sm text-gray-400">{block.body}</p>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'verification' && (
+              <div className="animate-fade-in space-y-6">
+                <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.verification.title')}</h3>
+                <p>{t('tutorial.verification.intro')}</p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-[#030303] p-6 rounded-xl border border-white/5 border-s-4 border-s-blue-500">
+                    <h4 className="text-blue-400 font-bold mb-4 uppercase text-sm">{t('tutorial.verification.memberTitle')}</h4>
+                    <ol className="space-y-3 text-sm text-gray-400">
+                      {verification.member.map((step, i) => (
+                        <li key={i} className="flex gap-3">
+                          <span className="shrink-0 w-6 h-6 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+
+                  <div className="bg-[#030303] p-6 rounded-xl border border-white/5 border-s-4 border-s-[#e62b1e]">
+                    <h4 className="text-[#e62b1e] font-bold mb-4 uppercase text-sm">{t('tutorial.verification.adminTitle')}</h4>
+                    <ol className="space-y-3 text-sm text-gray-400">
+                      {verification.admin.map((step, i) => (
+                        <li key={i} className="flex gap-3">
+                          <span className="shrink-0 w-6 h-6 rounded-full bg-[#e62b1e]/20 text-[#ff6b5e] text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'commands' && (
+              <div className="animate-fade-in space-y-6">
+                <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.commands.title')}</h3>
+                <div className="space-y-4">
+                  {commandGroups.map((grp, i) => (
+                    <div key={i} className={`${card} p-5`}>
+                      <h4 className={`${grp.color} font-bold mb-3 text-sm`}>{grp.title}</h4>
+                      <ul className="space-y-2 text-sm text-gray-400">
+                        {grp.items.map((item, j) => <li key={j}>{item}</li>)}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'auto' && (
+              <div className="animate-fade-in space-y-6">
+                <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.auto.title')}</h3>
+                <p>{t('tutorial.auto.intro')}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {autoCards.map((c, i) => (
+                    <div key={i} className={`${card} p-5`}>
+                      <h4 className="text-white font-bold mb-2 text-sm">{c.title}</h4>
+                      <p className="text-sm text-gray-400">{c.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Web guide */}
+      {group === 'web' && (
+        <div className="w-full max-w-7xl z-10 animate-fade-in">
+          <div className="bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 lg:p-10 shadow-2xl">
+            <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.web.title')}</h3>
+            <p className="mt-4 mb-8 text-gray-400">{t('tutorial.web.intro')}</p>
+
+            <ol className="space-y-4">
+              {webBlocks.map((block, i) => (
+                <li key={i} className={`${card} p-5 flex gap-4`}>
+                  <span className="shrink-0 w-9 h-9 rounded-full bg-[#e62b1e]/15 text-[#ff6b5e] font-black flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <div className="flex-1">
+                    <h4 className="text-white font-bold mb-1 flex items-center gap-2">
+                      <span>{block.icon}</span>
+                      <span>{block.title}</span>
+                    </h4>
+                    <p className="text-sm text-gray-400 leading-relaxed">{block.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

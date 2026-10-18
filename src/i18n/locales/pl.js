@@ -96,6 +96,11 @@ export default {
     headingB: 'BOTA',
     intro:
       'Twój pełny przewodnik po Albionerze. Wszystkie komendy są po angielsku, ale bot może odpowiadać w 10 różnych językach.',
+    groupTitle: 'Jak chcesz używać Albioner?',
+    groupDiscord: 'Na Discordzie',
+    groupDiscordDesc: 'Skonfiguruj bota na serwerze, weryfikuj członków i uruchamiaj komendy.',
+    groupWeb: 'W przeglądarce',
+    groupWebDesc: 'Zarządzaj wszystkim z przeglądarki — bez komend.',
     tabs: {
       setup: '🚀 Wstępna konfiguracja',
       verification: '🔒 Weryfikacja',

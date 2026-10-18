@@ -91,6 +91,11 @@ export default {
     headingA: 'دليل',
     headingB: 'البوت',
     intro: 'دليلك الكامل لاستخدام Albioner. جميع الأوامر مكتوبة بالإنجليزية، بينما يستطيع البوت الرد بـ 10 لغات مختلفة.',
+    groupTitle: 'كيف تريد استخدام Albioner؟',
+    groupDiscord: 'على ديسكورد',
+    groupDiscordDesc: 'ثبّت البوت في سيرفرك، وثّق الأعضاء، ونفّذ الأوامر.',
+    groupWeb: 'على الويب',
+    groupWebDesc: 'أدر كل شيء من متصفحك — دون أي أوامر.',
     tabs: {
       setup: '🚀 الإعداد الأولي',
       verification: '🔒 نظام التوثيق',

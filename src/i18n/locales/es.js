@@ -97,6 +97,11 @@ export default {
     headingB: 'DEL BOT',
     intro:
       'Tu guía completa para usar Albioner. Todos los comandos están en inglés, pero el bot puede responder en 10 idiomas distintos.',
+    groupTitle: '¿Cómo quieres usar Albioner?',
+    groupDiscord: 'En Discord',
+    groupDiscordDesc: 'Configura el bot en tu servidor, verifica miembros y ejecuta comandos.',
+    groupWeb: 'En la Web',
+    groupWebDesc: 'Gestiona todo desde tu navegador — sin comandos.',
     tabs: {
       setup: '🚀 Configuración inicial',
       verification: '🔒 Verificación',

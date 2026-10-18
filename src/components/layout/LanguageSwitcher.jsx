@@ -41,7 +41,7 @@ const LanguageSwitcher = ({ align = 'end', className = '' }) => {
       {open && (
         <ul
           role="listbox"
-          className={`absolute top-full mt-2 ${align === 'start' ? 'left-0' : 'right-0'} z-50 w-44 max-h-80 overflow-y-auto rounded-lg border border-white/10 bg-[#0a0a0a] shadow-2xl py-1`}
+          className={`absolute top-full mt-2 ${align === 'start' ? 'start-0' : 'end-0'} z-50 w-44 max-h-80 overflow-y-auto no-scrollbar rounded-lg border border-white/10 bg-[#0a0a0a] shadow-2xl py-1`}
         >
           {LANGUAGES.map((l) => (
             <li key={l.code}>

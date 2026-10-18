@@ -92,6 +92,11 @@ export default {
     headingB: '指南',
     intro:
       '使用 Albioner 的完整指南。所有命令均以英文书写，但机器人可以用 10 种不同语言回复。',
+    groupTitle: '你想如何使用 Albioner？',
+    groupDiscord: '在 Discord 上',
+    groupDiscordDesc: '在服务器中设置机器人、验证成员并运行命令。',
+    groupWeb: '在网页上',
+    groupWebDesc: '直接在浏览器中管理一切——无需命令。',
     tabs: {
       setup: '🚀 初始设置',
       verification: '🔒 验证系统',

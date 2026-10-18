@@ -96,6 +96,11 @@ export default {
     headingB: 'KILAVUZU',
     intro:
       'Albioner için eksiksiz kılavuzunuz. Tüm komutlar İngilizce yazılır, ancak bot 10 farklı dilde yanıt verebilir.',
+    groupTitle: 'Albioner\'ı nasıl kullanmak istersin?',
+    groupDiscord: 'Discord\'da',
+    groupDiscordDesc: 'Botu sunucuna kur, üyeleri doğrula ve komutları çalıştır.',
+    groupWeb: 'Web\'de',
+    groupWebDesc: 'Her şeyi tarayıcından yönet — komut gerekmez.',
     tabs: {
       setup: '🚀 İlk Kurulum',
       verification: '🔒 Doğrulama',

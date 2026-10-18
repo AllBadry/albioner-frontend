@@ -97,6 +97,11 @@ export default {
     headingB: 'DU BOT',
     intro:
       'Votre guide complet pour utiliser Albioner. Toutes les commandes sont en anglais, mais le bot peut répondre dans 10 langues différentes.',
+    groupTitle: 'Comment voulez-vous utiliser Albioner ?',
+    groupDiscord: 'Sur Discord',
+    groupDiscordDesc: 'Installez le bot sur votre serveur, vérifiez les membres et lancez des commandes.',
+    groupWeb: 'Sur le Web',
+    groupWebDesc: 'Gérez tout depuis votre navigateur — sans commandes.',
     tabs: {
       setup: '🚀 Configuration initiale',
       verification: '🔒 Vérification',
