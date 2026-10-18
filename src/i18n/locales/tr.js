@@ -102,10 +102,10 @@ export default {
     groupWeb: 'Web\'de',
     groupWebDesc: 'Her şeyi tarayıcından yönet — komut gerekmez.',
     tabs: {
-      setup: '🚀 İlk Kurulum',
-      verification: '🔒 Doğrulama',
-      commands: '💻 Komutlar',
-      auto: '🤖 Otomatik Özellikler',
+      setup: 'İlk Kurulum',
+      verification: 'Doğrulama',
+      commands: 'Komutlar',
+      auto: 'Otomatik Özellikler',
     },
     setup: {
       title: 'Sunucu ilk kurulumu',

@@ -105,11 +105,11 @@ export default {
     groupWeb: 'On the Web',
     groupWebDesc: 'Manage everything from your browser — no commands needed.',
     tabs: {
-      setup: '🚀 Initial Setup',
-      verification: '🔒 Verification',
-      commands: '💻 Command Guide',
-      auto: '🤖 Automatic Features',
-      web: '🌐 Web Dashboard',
+      setup: 'Initial Setup',
+      verification: 'Verification',
+      commands: 'Command Guide',
+      auto: 'Automatic Features',
+      web: 'Web Dashboard',
     },
     setup: {
       title: 'Initial Server Setup',

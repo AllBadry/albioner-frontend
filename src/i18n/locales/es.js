@@ -103,10 +103,10 @@ export default {
     groupWeb: 'En la Web',
     groupWebDesc: 'Gestiona todo desde tu navegador — sin comandos.',
     tabs: {
-      setup: '🚀 Configuración inicial',
-      verification: '🔒 Verificación',
-      commands: '💻 Comandos',
-      auto: '🤖 Funciones automáticas',
+      setup: 'Configuración inicial',
+      verification: 'Verificación',
+      commands: 'Comandos',
+      auto: 'Funciones automáticas',
     },
     setup: {
       title: 'Configuración inicial del servidor',

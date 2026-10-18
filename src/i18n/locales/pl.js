@@ -102,10 +102,10 @@ export default {
     groupWeb: 'W przeglądarce',
     groupWebDesc: 'Zarządzaj wszystkim z przeglądarki — bez komend.',
     tabs: {
-      setup: '🚀 Wstępna konfiguracja',
-      verification: '🔒 Weryfikacja',
-      commands: '💻 Komendy',
-      auto: '🤖 Funkcje automatyczne',
+      setup: 'Wstępna konfiguracja',
+      verification: 'Weryfikacja',
+      commands: 'Komendy',
+      auto: 'Funkcje automatyczne',
     },
     setup: {
       title: 'Wstępna konfiguracja serwera',

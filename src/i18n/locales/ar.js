@@ -97,10 +97,10 @@ export default {
     groupWeb: 'على الويب',
     groupWebDesc: 'أدر كل شيء من متصفحك — دون أي أوامر.',
     tabs: {
-      setup: '🚀 الإعداد الأولي',
-      verification: '🔒 نظام التوثيق',
-      commands: '💻 دليل الأوامر',
-      auto: '🤖 الميزات التلقائية',
+      setup: 'الإعداد الأولي',
+      verification: 'نظام التوثيق',
+      commands: 'دليل الأوامر',
+      auto: 'الميزات التلقائية',
       web: 'لوحة التحكم (Web)',
     },
     setup: {

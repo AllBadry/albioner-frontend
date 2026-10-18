@@ -102,10 +102,10 @@ export default {
     groupWeb: 'Im Web',
     groupWebDesc: 'Verwalte alles im Browser — ganz ohne Befehle.',
     tabs: {
-      setup: '🚀 Ersteinrichtung',
-      verification: '🔒 Verifizierung',
-      commands: '💻 Befehle',
-      auto: '🤖 Automatische Funktionen',
+      setup: 'Ersteinrichtung',
+      verification: 'Verifizierung',
+      commands: 'Befehle',
+      auto: 'Automatische Funktionen',
     },
     setup: {
       title: 'Ersteinrichtung des Servers',

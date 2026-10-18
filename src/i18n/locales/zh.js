@@ -98,10 +98,10 @@ export default {
     groupWeb: '在网页上',
     groupWebDesc: '直接在浏览器中管理一切——无需命令。',
     tabs: {
-      setup: '🚀 初始设置',
-      verification: '🔒 验证系统',
-      commands: '💻 命令指南',
-      auto: '🤖 自动功能',
+      setup: '初始设置',
+      verification: '验证系统',
+      commands: '命令指南',
+      auto: '自动功能',
     },
     setup: {
       title: '服务器初始设置',
