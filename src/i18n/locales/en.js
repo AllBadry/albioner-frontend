@@ -460,6 +460,18 @@ export default {
     fame: 'fame',
     noZoneDataTitle: 'Zone data unavailable',
     noZoneData: 'Albion’s API is not returning zone names for battles right now, so fights can’t be grouped by land. This will fill in automatically once it does again.',
+    tabWorld: 'World lands',
+    tabGuild: 'My guild',
+    worldTitle: 'World lands',
+    worldDesc: 'Lands ranked by kill activity over the last {minutes} minutes — recency-weighted, refreshed every minute.',
+    worldRegionNote: 'Albion is not returning exact zone names right now, so lands are grouped by server region. This upgrades to named zones automatically once the API provides them again.',
+    worldNoData: 'Collecting the live kill feed — the ranking appears within a minute.',
+    regionAmericas: 'Americas',
+    regionEurope: 'Europe',
+    regionAsia: 'Asia',
+    windowKills: 'kills ({minutes}m)',
+    updatedAt: 'updated',
+    lastKill: 'last kill',
   },
 
   economy: {
