@@ -240,6 +240,7 @@ export default {
       setup: 'Setup',
       kills: 'Kills',
       military: 'Military',
+      danger: 'Danger',
       economy: 'Economy',
       members: 'Members',
       inbox: 'Inbox',
