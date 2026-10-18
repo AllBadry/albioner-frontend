@@ -60,6 +60,7 @@ const Tutorial = () => {
     { title: t('tutorial.web.militaryTitle'), body: t('tutorial.web.militaryBody'), icon: '⚔️' },
     { title: t('tutorial.web.economyTitle'), body: t('tutorial.web.economyBody'), icon: '💰' },
     { title: t('tutorial.web.membersTitle'), body: t('tutorial.web.membersBody'), icon: '👥' },
+    { title: t('tutorial.web.communityTitle'), body: t('tutorial.web.communityBody'), icon: '🏅' },
     { title: t('tutorial.web.inboxTitle'), body: t('tutorial.web.inboxBody'), icon: '📥' },
   ];
 

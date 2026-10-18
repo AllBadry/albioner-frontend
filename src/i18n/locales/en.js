@@ -218,14 +218,17 @@ export default {
         'Live kills and deaths for your tracked guild, with gear values and a "wrong name" warning if the saved name is not a real Albion guild.',
       militaryTitle: '4. Military tab',
       militaryBody:
-        'Latest battle auto-detected for your guild, full battle history, per-player breakdown, CTA audits, and timers. Refresh any time.',
+        'Latest battle auto-detected for your guild, full battle history, per-player breakdown, CTA audits, timers, plus the Comp Draft and Season tabs.',
       economyTitle: '5. Economy tab',
       economyBody:
-        'Tax, laborer, trade, market charts, refining calculator, and alliance chest audit — all in one place.',
+        'Tax, laborer, trade, market charts, refining calculator, alliance chest audit and the Black Market scanner — all in one place.',
       membersTitle: '6. Members tab',
       membersBody:
         'Synced guild roster with kills, deaths, and loot dropped per member.',
-      inboxTitle: '7. Inbox tab',
+      communityTitle: '7. Community tab',
+      communityBody:
+        'The weekly leaderboard (top killer, feeder, CTA, fame + MVP role) and the guild armory: lend gear, mark returns and extend loans.',
+      inboxTitle: '8. Inbox tab',
       inboxBody:
         'Review join applications and regear requests submitted through Discord, right from the web.',
     },
