@@ -43,12 +43,12 @@ const Tutorial = () => {
 
   const commandGroups = [
     { title: t('tutorial.commands.adminTitle'), color: 'text-[#e62b1e]', items: [1, 2, 3, 4].map((n) => t(`tutorial.commands.admin${n}`)) },
-    { title: t('tutorial.commands.militaryTitle'), color: 'text-blue-400', items: [1, 2, 3, 4].map((n) => t(`tutorial.commands.military${n}`)) },
-    { title: t('tutorial.commands.economyTitle'), color: 'text-green-400', items: [1, 2, 3, 4].map((n) => t(`tutorial.commands.economy${n}`)) },
-    { title: t('tutorial.commands.generalTitle'), color: 'text-yellow-400', items: [1, 2, 3].map((n) => t(`tutorial.commands.general${n}`)) },
+    { title: t('tutorial.commands.militaryTitle'), color: 'text-blue-400', items: [1, 2, 3, 4, 5, 6].map((n) => t(`tutorial.commands.military${n}`)) },
+    { title: t('tutorial.commands.economyTitle'), color: 'text-green-400', items: [1, 2, 3, 4, 5].map((n) => t(`tutorial.commands.economy${n}`)) },
+    { title: t('tutorial.commands.generalTitle'), color: 'text-yellow-400', items: [1, 2, 3, 4, 5].map((n) => t(`tutorial.commands.general${n}`)) },
   ];
 
-  const autoCards = [1, 2, 3, 4, 5, 6].map((n) => ({
+  const autoCards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => ({
     title: t(`tutorial.auto.c${n}title`),
     desc: t(`tutorial.auto.c${n}desc`),
   }));

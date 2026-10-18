@@ -157,15 +157,20 @@ export default {
       military2: '/battle-report — a full intelligence report for a ZvZ battle.',
       military3: '/audit-cta — expose AFK players by comparing attendance with real combat.',
       military4: '/timer add/list/remove — manage the timers board for castles and territories.',
+      military5: '/comp start/close — post a ZvZ composition draft with role buttons members claim live.',
+      military6: '/season log/status/config — log season points and project whether you reach the goal.',
       economyTitle: '💰 Economy commands',
       economy1: '/market-chart — a chart of an item price over time.',
       economy2: '/duckmarket — calculate profit for hauling goods between cities.',
       economy3: '/refining-calculator — a profit calculator for refining resources.',
       economy4: '/audit-chest — audit alliance chest logs and see the withdrawals.',
+      economy5: '/bm add/list/scan — watch items and get alerted when the Black Market pays well above the market.',
       generalTitle: '🌐 General commands',
       general1: '/regear — request compensation for lost gear with a Killboard link.',
       general2: '/emergency — send an emergency alert to all members with @everyone.',
       general3: '/build — add and display alliance builds.',
+      general4: '/leaderboard show/config — weekly top killer, feeder, CTA and fame, plus an MVP role.',
+      general5: '/lend give/list/return — lend gear through a ticket and get nudged when it is overdue.',
     },
     auto: {
       title: 'Automatic Features (running in the background)',
@@ -185,6 +190,18 @@ export default {
       c6title: '🧹 Auto-kicker',
       c6desc:
         'Periodically removes the role from members who left the alliance in-game and DMs them.',
+      c7title: '🏆 Weekly leaderboard',
+      c7desc:
+        'Posts the weekly recap (top killer, feeder, CTA, fame) and rotates the MVP role every Monday 00:00 UTC.',
+      c8title: '📦 Lending reminders',
+      c8desc:
+        'Nudges borrowers whose lent gear is overdue (borrower DM + officer ping), checked every 15 minutes.',
+      c9title: '🛒 Black Market scanner',
+      c9desc:
+        'Checks your watched items every 10 minutes and alerts when the Black Market beats the normal market.',
+      c10title: '📈 Season predictor',
+      c10desc:
+        'Reminds leadership to log season points and projects the goal ETA once a season end is set.',
     },
     web: {
       title: 'Web Dashboard Guide',
