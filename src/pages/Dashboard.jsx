@@ -28,13 +28,13 @@ const EMPTY_FORM = {
 
 // Dashboard views — shared by the desktop sidebar and the mobile bottom bar.
 const NAV = [
-  { key: 'setup', icon: '??' },
-  { key: 'kills', icon: '??' },
-  { key: 'military', icon: '??' },
-  { key: 'danger', icon: '??' },
-  { key: 'economy', icon: '??' },
-  { key: 'members', icon: '??' },
-  { key: 'inbox', icon: '??' },
+  { key: 'setup', icon: '⚙️' },
+  { key: 'kills', icon: '📡' },
+  { key: 'military', icon: '⚔️' },
+  { key: 'danger', icon: '☠️' },
+  { key: 'economy', icon: '💰' },
+  { key: 'members', icon: '👥' },
+  { key: 'inbox', icon: '📥' },
 ];
 
 const formFromSettings = (settings) => ({
