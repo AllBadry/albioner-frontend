@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import { apiFetch } from '../api';
 import { number } from '../utils/format';
 import { useI18n } from '../i18n';
+import BlackMarket from './BlackMarket';
 
 const CITIES = ['Caerleon', 'Bridgewatch', 'Fort Sterling', 'Lymhurst', 'Martlock', 'Thetford', 'Brecilien'];
 
@@ -538,6 +539,7 @@ const TAB_COMPONENTS = [
   { key: 'chart', tabKey: 'economy.tabChart', Component: ChartTab },
   { key: 'refining', tabKey: 'economy.tabRefining', Component: RefiningTab },
   { key: 'chest', tabKey: 'economy.tabChest', Component: ChestTab },
+  { key: 'bm', tabKey: 'economy.tabBm', Component: BlackMarket },
 ];
 
 const Economy = ({ guild }) => {

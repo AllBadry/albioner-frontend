@@ -12,6 +12,8 @@ import { useI18n } from '../i18n';
 import { fetchBattleReport, peekBattleReport } from '../utils/battleCache';
 import { getSelectedBattle, setSelectedBattle } from '../utils/selectedBattle';
 import Regear from './Regear';
+import Comp from './Comp';
+import Season from './Season';
 
 const TYPE_ICON = { castle: '🏰', territory: '⚔️', hideout: '🛡️' };
 
@@ -995,6 +997,8 @@ const Military = ({ guild, onChannelSaved }) => {
     { key: 'battle', label: t('military.tabBattle') },
     { key: 'regear', label: t('military.tabRegear') },
     { key: 'audit', label: t('military.tabAudit') },
+    { key: 'comp', label: t('military.tabComp') },
+    { key: 'season', label: t('military.tabSeason') },
   ];
 
   return (
@@ -1026,6 +1030,8 @@ const Military = ({ guild, onChannelSaved }) => {
       {tab === 'battle' && <BattleTab guildId={guild.id} />}
       {tab === 'regear' && <Regear guild={guild} guildId={guild.id} />}
       {tab === 'audit' && <AuditTab guildId={guild.id} />}
+      {tab === 'comp' && <Comp guildId={guild.id} />}
+      {tab === 'season' && <Season guildId={guild.id} />}
     </div>
   );
 };

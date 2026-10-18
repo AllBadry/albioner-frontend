@@ -16,6 +16,7 @@ import Economy from '../components/Economy';
 import DangerousLands from '../components/DangerousLands';
 import Members from '../components/Members';
 import Inbox from '../components/Inbox';
+import Community from '../components/Community';
 
 const EMPTY_FORM = {
   allianceName: '',
@@ -34,6 +35,7 @@ const NAV = [
   { key: 'danger', icon: '☠️' },
   { key: 'economy', icon: '💰' },
   { key: 'members', icon: '👥' },
+  { key: 'community', icon: '🏅' },
   { key: 'inbox', icon: '📥' },
 ];
 
@@ -510,6 +512,12 @@ const Dashboard = () => {
             </div>
           )}
 
+          {selected && view === 'community' && (
+            <div key={`${selected.id}-community`} className="animate-fade-in">
+              <Community guild={selected} />
+            </div>
+          )}
+
           {selected && view === 'inbox' && (
             <div key={`${selected.id}-inbox`} className="animate-fade-in">
               <Inbox guildId={selected.id} onReviewed={() => setInboxCount((c) => Math.max(0, c - 1))} />
@@ -521,7 +529,7 @@ const Dashboard = () => {
       {/* Mobile bottom navigation */}
       {selected && (
         <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#0a0a0a]/95 backdrop-blur border-t border-white/10 pb-[env(safe-area-inset-bottom)]">
-          <div className="grid grid-cols-7">
+          <div className="grid grid-cols-4">
             {NAV.map((item) => (
               <button
                 key={item.key}
