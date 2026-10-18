@@ -16,11 +16,19 @@ const Tutorial = () => {
   const discordTabs = [
     { id: 'setup', icon: '🚀', title: t('tutorial.tabs.setup') },
     { id: 'verification', icon: '🔒', title: t('tutorial.tabs.verification') },
+    { id: 'requests', icon: '📮', title: t('tutorial.tabs.requests') },
     { id: 'commands', icon: '💻', title: t('tutorial.tabs.commands') },
     { id: 'auto', icon: '🤖', title: t('tutorial.tabs.auto') },
   ];
 
   // ---- Content --------------------------------------------------------------
+  const channelRef = [
+    { id: 'killfeed', icon: '📡', name: t('tutorial.setup.chKillfeedName'), desc: t('tutorial.setup.chKillfeedDesc'), cmds: t('tutorial.setup.chKillfeedCmds'), required: false },
+    { id: 'economy', icon: '💰', name: t('tutorial.setup.chEconomyName'), desc: t('tutorial.setup.chEconomyDesc'), cmds: t('tutorial.setup.chEconomyCmds'), required: true },
+    { id: 'military', icon: '⚔️', name: t('tutorial.setup.chMilitaryName'), desc: t('tutorial.setup.chMilitaryDesc'), cmds: t('tutorial.setup.chMilitaryCmds'), required: true },
+    { id: 'admin', icon: '🛠️', name: t('tutorial.setup.chAdminName'), desc: t('tutorial.setup.chAdminDesc'), cmds: t('tutorial.setup.chAdminCmds'), required: true },
+  ];
+
   const setupBlocks = [
     {
       title: t('tutorial.setup.b1title'),
@@ -34,6 +42,15 @@ const Tutorial = () => {
     },
     { title: t('tutorial.setup.b2title'), body: t('tutorial.setup.b2body') },
     { title: t('tutorial.setup.b3title'), body: t('tutorial.setup.b3body') },
+  ];
+
+  const requestItems = [
+    { icon: '🔒', title: t('tutorial.requests.r1title'), cmd: t('tutorial.requests.r1cmd'), member: t('tutorial.requests.r1member'), arrival: t('tutorial.requests.r1arrival') },
+    { icon: '📋', title: t('tutorial.requests.r2title'), cmd: t('tutorial.requests.r2cmd'), member: t('tutorial.requests.r2member'), arrival: t('tutorial.requests.r2arrival') },
+    { icon: '🛡️', title: t('tutorial.requests.r3title'), cmd: t('tutorial.requests.r3cmd'), member: t('tutorial.requests.r3member'), arrival: t('tutorial.requests.r3arrival') },
+    { icon: '🎯', title: t('tutorial.requests.r4title'), cmd: t('tutorial.requests.r4cmd'), member: t('tutorial.requests.r4member'), arrival: t('tutorial.requests.r4arrival') },
+    { icon: '🎧', title: t('tutorial.requests.r5title'), cmd: t('tutorial.requests.r5cmd'), member: t('tutorial.requests.r5member'), arrival: t('tutorial.requests.r5arrival') },
+    { icon: '📦', title: t('tutorial.requests.r6title'), cmd: t('tutorial.requests.r6cmd'), member: t('tutorial.requests.r6member'), arrival: t('tutorial.requests.r6arrival') },
   ];
 
   const verification = {
@@ -138,6 +155,26 @@ const Tutorial = () => {
                 <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.setup.title')}</h3>
                 <p>{t('tutorial.setup.intro')}</p>
 
+                <div>
+                  <h4 className="text-white font-bold mb-1">{t('tutorial.setup.channelsTitle')}</h4>
+                  <p className="text-sm text-gray-400 mb-3">{t('tutorial.setup.channelsIntro')}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {channelRef.map((c) => (
+                      <div key={c.id} className={`${card} p-4 border-s-4 ${c.required ? 'border-s-[#e62b1e]' : 'border-s-blue-500'}`}>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span>{c.icon}</span>
+                          <h5 className="text-white font-bold text-sm">{c.name}</h5>
+                          <span className={`ms-auto text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${c.required ? 'bg-[#e62b1e]/20 text-[#ff6b5e]' : 'bg-blue-500/20 text-blue-300'}`}>
+                            {c.required ? t('tutorial.setup.required') : t('tutorial.setup.recommended')}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-400 mb-2">{c.desc}</p>
+                        <p className="text-[11px] text-gray-500 font-mono leading-relaxed">{c.cmds}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="space-y-5">
                   {setupBlocks.map((block, i) => (
                     <div key={i} className={`${card} p-5`}>
@@ -156,6 +193,11 @@ const Tutorial = () => {
                       {block.body && <p className="text-sm text-gray-400">{block.body}</p>}
                     </div>
                   ))}
+                </div>
+
+                <div className="bg-[#030303] border border-white/5 border-s-4 border-s-yellow-500 p-5 rounded-xl">
+                  <h4 className="text-yellow-400 font-bold mb-2">{t('tutorial.setup.whyTitle')}</h4>
+                  <p className="text-sm text-gray-400">{t('tutorial.setup.whyBody')}</p>
                 </div>
               </div>
             )}
@@ -189,6 +231,32 @@ const Tutorial = () => {
                       ))}
                     </ol>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'requests' && (
+              <div className="animate-fade-in space-y-6">
+                <h3 className="text-3xl font-black text-white uppercase border-b border-white/10 pb-4">{t('tutorial.requests.title')}</h3>
+                <p>{t('tutorial.requests.intro')}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {requestItems.map((r, i) => (
+                    <div key={i} className={`${card} p-5 space-y-3`}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl leading-none">{r.icon}</span>
+                        <h4 className="text-white font-bold text-sm">{r.title}</h4>
+                      </div>
+                      <code className="inline-block text-white bg-white/10 px-2 py-1 rounded font-mono text-xs">{r.cmd}</code>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase text-gray-500 mb-0.5">{t('tutorial.requests.memberLabel')}</p>
+                        <p className="text-sm text-gray-400">{r.member}</p>
+                      </div>
+                      <div className="border-s-2 border-s-[#e62b1e] ps-3">
+                        <p className="text-[10px] font-bold uppercase text-[#ff6b5e] mb-0.5">{t('tutorial.requests.arrivalLabel')}</p>
+                        <p className="text-sm text-gray-300">{r.arrival}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
