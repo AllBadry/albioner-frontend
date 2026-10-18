@@ -458,6 +458,8 @@ export default {
     hotZonesDesc: 'Lands with the highest total kill count — expect heavy fighting.',
     kills: 'kills',
     fame: 'fame',
+    noZoneDataTitle: 'Zone data unavailable',
+    noZoneData: 'Albion’s API is not returning zone names for battles right now, so fights can’t be grouped by land. This will fill in automatically once it does again.',
   },
 
   economy: {

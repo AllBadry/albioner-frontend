@@ -70,6 +70,12 @@ const DangerousLands = ({ guild }) => {
               {t('danger.tracked')}: <span className="text-white font-bold">{data.trackedName}</span>
             </p>
 
+            {data.zoneDataAvailable === false ? (
+              <div className="bg-[#030303] border border-amber-500/25 rounded-xl p-5">
+                <h4 className="text-amber-400 font-bold uppercase tracking-widest mb-3">{t('danger.noZoneDataTitle')}</h4>
+                <p className="text-gray-400 text-sm leading-relaxed">{t('danger.noZoneData')}</p>
+              </div>
+            ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Kill zones: where our members die the most */}
               <div className="bg-[#030303] border border-white/5 rounded-xl p-5">
@@ -111,6 +117,7 @@ const DangerousLands = ({ guild }) => {
                 </ul>
               </div>
             </div>
+            )}
           </>
         )}
         </div>
