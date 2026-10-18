@@ -33,7 +33,7 @@ const About = () => {
       */}
       <div className={`absolute top-0 h-full w-full lg:w-[80%] z-0 pointer-events-none animate-fade-in ${rtl ? 'right-0' : 'left-0'}`}>
         <img 
-          src="/cityyyy.jpg"
+          src="/cityyyy_result.webp"
           alt="Alliance Town" 
           // 1. أضفنا `object-[30%_center]` لسحب الصورة وإظهار الجزء المناسب منها
           className={`object-cover object-[30%_center] w-full h-full opacity-90 transition-transform duration-1000 ${activeFeature ? 'scale-105' : 'scale-100'}`}
@@ -120,7 +120,7 @@ const About = () => {
 
           {/* Duck Image */}
           <img 
-            src="./duck3.png"
+            src="./duck3_result.webp"
             alt="Albioner Guardian Duck" 
             className={`object-contain h-[90%] lg:h-[95%] xl:h-[108%] max-w-none transform transition-all duration-700 translate-y-16 lg:translate-y-28 rtl-flip-x ${
               activeFeature 

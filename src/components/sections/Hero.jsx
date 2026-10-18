@@ -38,7 +38,7 @@ const Hero = () => {
       {/* القسم الأيمن: صورة البطة */}
       <div className={`absolute bottom-0 h-[60%] lg:h-full w-full lg:w-1/2 flex justify-end items-end z-0 pointer-events-none ${rtl ? 'left-0 justify-start' : 'right-0 justify-end'}`}>
         <img 
-          src="./duck.png"
+          src="./duck_result.webp"
           alt="Albioner Duck Mascot" 
           className={`object-contain h-full lg:h-[95%] xl:h-[105%] max-w-none transform rtl-flip-x ${rtl ? '-translate-x-10 lg:-translate-x-16' : 'translate-x-10 lg:translate-x-16'}`}
         />

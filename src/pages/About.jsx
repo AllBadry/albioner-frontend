@@ -39,7 +39,7 @@ const About = () => {
       {/* بخش تصویر اردک (سمت راست) */}
       <div className="absolute right-0 bottom-0 h-[60%] lg:h-full w-full lg:w-1/2 flex justify-end items-end z-0 pointer-events-none animate-slide-in-right">
         <img 
-          src="./duck3.png" 
+          src="./duck3_result.webp" 
           alt="Albioner Guardian Duck" 
           className="object-contain h-full lg:h-[85%] xl:h-[95%] max-w-none transform -translate-x-10 lg:-translate-x-20"
         />

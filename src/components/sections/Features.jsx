@@ -28,7 +28,7 @@ const Features = () => {
         {/* Poster 1: Economy (طولي - اليسار) */}
         <div className="relative group rounded-2xl overflow-hidden border border-white/10 hover:border-[#e62b1e]/50 transition-colors duration-500 h-[400px] xl:h-full">
           <img 
-            src="/11.jpg" 
+            src="/11_result.webp" 
             alt="Economy Insights" 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
@@ -45,7 +45,7 @@ const Features = () => {
         {/* Poster 2: ZvZ Battles (طولي - المنتصف) */}
         <div className="relative group rounded-2xl overflow-hidden border border-white/10 hover:border-[#e62b1e]/50 transition-colors duration-500 h-[400px] xl:h-full">
           <img 
-            src="/22.jpg" 
+            src="/22_result.webp" 
             alt="ZvZ Alerts" 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
@@ -65,7 +65,7 @@ const Features = () => {
           {/* Poster 3: Scouting (مربع علوي) */}
           <div className="relative group rounded-2xl overflow-hidden border border-white/10 hover:border-[#e62b1e]/50 transition-colors duration-500 flex-1">
             <img 
-              src="/33.jpg" 
+              src="/33_result.webp" 
               alt="Scouting Intel" 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
@@ -82,7 +82,7 @@ const Features = () => {
           {/* Poster 4: Regear (مربع سفلي) */}
           <div className="relative group rounded-2xl overflow-hidden border border-white/10 hover:border-[#e62b1e]/50 transition-colors duration-500 flex-1">
             <img 
-              src="/44.jpg" 
+              src="/44_result.webp" 
               alt="Regear Management" 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
