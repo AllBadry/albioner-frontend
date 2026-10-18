@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../auth';
 import { useI18n } from '../../i18n';
@@ -6,11 +6,20 @@ import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = ({ setActiveView, activeView }) => {
   const [isOpen, setIsOpen] = useState(false);
+  // يتحول إلى أسود صلب بعد النزول قليلاً حتى لا يتداخل نص الناف بار مع المحتوى
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === '/';
   const { loggedIn } = useAuth();
   const { t, dir } = useI18n();
   const rtl = dir === 'rtl';
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const handleNavClick = (view, e) => {
     e.preventDefault();
@@ -19,8 +28,8 @@ const Navbar = ({ setActiveView, activeView }) => {
   };
 
   return (
-    // تم تغيير الكلاس هنا إلى bg-transparent ليكون شفافاً بالكامل
-    <nav className="fixed w-full top-0 z-50 bg-transparent">
+    // عند التمرير للأسفل تصبح الخلفية سوداء صلبة حتى لا يتداخل نص الناف بار مع المحتوى
+    <nav className={`fixed w-full top-0 z-50 transition-colors duration-300 ${scrolled ? 'bg-[#030303]/95 backdrop-blur-md border-b border-white/10 shadow-lg' : 'bg-transparent'}`}>
       <div className="w-full px-6 lg:px-16 mx-auto flex items-center justify-between h-20">
 
         {/* الشعار */}
