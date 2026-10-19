@@ -46,6 +46,7 @@ export default {
     dashboard: 'لوحة التحكم',
     login: 'تسجيل الدخول',
     discord: 'ديسكورد',
+    addBot: 'أضف البوت',
   },
 
   hero: {
@@ -55,6 +56,7 @@ export default {
     freeBot: 'بوت مجاني ©',
     getStarted: 'ابدأ الآن',
     programmer: 'المبرمج',
+    addBot: 'أضف البوت على ديسكورد',
   },
 
   about: {
@@ -96,6 +98,8 @@ export default {
     groupDiscordDesc: 'ثبّت البوت في سيرفرك، وثّق الأعضاء، ونفّذ الأوامر.',
     groupWeb: 'على الويب',
     groupWebDesc: 'أدر كل شيء من متصفحك — دون أي أوامر.',
+    addBotTitle: 'أضف Albioner إلى سيرفرك',
+    addBotDesc: 'ادعُ البوت بنقرة واحدة، ثم ثبّته خلال ثوانٍ.',
     tabs: {
       setup: 'الإعداد الأولي',
       verification: 'نظام التوثيق',

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../auth';
 import { useI18n } from '../../i18n';
+import { BOT_INVITE_URL } from '../../config';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const Navbar = ({ setActiveView, activeView }) => {
@@ -82,6 +83,14 @@ const Navbar = ({ setActiveView, activeView }) => {
 
         {/* زر تسجيل الدخول / الداشبورد + زر ديسكورد للشاشات الكبيرة */}
         <div className="hidden md:flex items-center gap-4 lg:gap-6">
+          <a
+            href={BOT_INVITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center gap-2 bg-[#e62b1e] hover:bg-[#c4221a] text-white font-bold uppercase text-sm px-4 py-2 rounded-lg transition-colors drop-shadow-md ${rtl ? 'tracking-normal' : 'tracking-wide'}`}
+          >
+            {t('nav.addBot')}
+          </a>
           <LanguageSwitcher />
           {loggedIn ? (
             <Link to="/dashboard" className={`flex items-center gap-2 text-white font-bold uppercase text-sm hover:text-[#e62b1e] transition-colors drop-shadow-md ${rtl ? 'tracking-normal' : 'tracking-widest'}`}>
@@ -126,6 +135,15 @@ const Navbar = ({ setActiveView, activeView }) => {
               <Link to="/login" onClick={() => setIsOpen(false)} className={`text-gray-300 hover:text-white text-sm font-bold uppercase ${rtl ? 'tracking-normal' : 'tracking-widest'}`}>{t('nav.login')}</Link>
             )}
             <div className="pt-2 border-t border-white/10">
+              <a
+                href={BOT_INVITE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsOpen(false)}
+                className={`block text-center bg-[#e62b1e] hover:bg-[#c4221a] text-white font-bold uppercase text-sm px-4 py-2.5 rounded-lg transition-colors mb-4 ${rtl ? 'tracking-normal' : 'tracking-wide'}`}
+              >
+                {t('nav.addBot')}
+              </a>
               <LanguageSwitcher align="start" />
             </div>
           </div>

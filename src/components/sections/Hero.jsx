@@ -1,6 +1,7 @@
 // قم بتعديل مسار الصورة حسب مكانها في مشروعك
 
 import { useI18n } from '../../i18n';
+import { BOT_INVITE_URL } from '../../config';
 
 // رابط حساب الديسكورد الخاص بالمطوّر (يُستخدم في زر "Programmer" بالأسفل).
 const DISCORD_PROFILE = 'https://discord.com/users/1342957056403181701';
@@ -47,12 +48,20 @@ const Hero = () => {
       </div>
 
       {/* الأزرار / الروابط في أسفل اليمين */}
-      <div className={`absolute bottom-8 lg:bottom-12 z-20 flex gap-6 lg:gap-10 ${rtl ? 'left-8 lg:left-16' : 'right-8 lg:right-16'}`}>
+      <div className={`absolute bottom-8 lg:bottom-12 z-20 flex flex-wrap items-center gap-6 lg:gap-10 ${rtl ? 'left-8 lg:left-16' : 'right-8 lg:right-16'}`}>
         <a 
           href="/login" 
           className={`text-white font-bold uppercase text-sm lg:text-lg border-b-4 border-[#e62b1e] pb-1 hover:text-[#e62b1e] transition-colors ${rtl ? 'tracking-normal' : 'tracking-widest'}`}
         >
           {t('hero.getStarted')}
+        </a>
+        <a 
+          href={BOT_INVITE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`bg-[#e62b1e] hover:bg-[#c4221a] text-white font-bold uppercase text-sm lg:text-base px-5 py-2.5 rounded-lg transition-colors drop-shadow-md ${rtl ? 'tracking-normal' : 'tracking-wide'}`}
+        >
+          {t('hero.addBot')}
         </a>
         <a 
           href={DISCORD_PROFILE}

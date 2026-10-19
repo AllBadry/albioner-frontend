@@ -48,6 +48,7 @@ export default {
     dashboard: 'Dashboard',
     login: 'Login',
     discord: 'Discord',
+    addBot: 'Add Bot',
   },
 
   hero: {
@@ -57,6 +58,7 @@ export default {
     freeBot: 'Free Bot ©',
     getStarted: 'Get Started',
     programmer: 'Programmer',
+    addBot: 'Add Bot to Discord',
   },
 
   about: {
@@ -104,6 +106,8 @@ export default {
     groupDiscordDesc: 'Set the bot up in your server, verify members and run commands.',
     groupWeb: 'On the Web',
     groupWebDesc: 'Manage everything from your browser — no commands needed.',
+    addBotTitle: 'Add Albioner to your server',
+    addBotDesc: 'Invite the bot in one click, then set it up in seconds.',
     tabs: {
       setup: 'Initial Setup',
       verification: 'Verification',

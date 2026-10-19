@@ -26,8 +26,9 @@ export const BILLING = {
 };
 
 // Permissions the bot asks for when invited: View Channels, Send Messages,
-// Embed Links, Attach Files, Read Message History.
-export const BOT_PERMISSIONS = '117760';
+// Embed Links, Attach Files, Read Message History, Mention Everyone,
+// Manage Roles, Manage Nicknames and the thread permissions.
+export const BOT_PERMISSIONS = '395541203984';
 
 // Full Discord authorize URL the "Continue with Discord" button redirects to.
 export function buildDiscordAuthUrl() {
@@ -45,11 +46,16 @@ export function buildBotInviteUrl(guildId) {
   const params = new URLSearchParams({
     client_id: DISCORD_CLIENT_ID,
     permissions: BOT_PERMISSIONS,
+    integration_type: '0',
     scope: 'bot applications.commands',
   });
   if (guildId) params.set('guild_id', guildId);
-  return `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+  return `https://discord.com/oauth2/authorize?${params.toString()}`;
 }
+
+// Ready-to-use invite link (no pre-selected server) for the "Add Bot" buttons
+// in the navbar, hero and tutorial.
+export const BOT_INVITE_URL = buildBotInviteUrl();
 
 // The specialized channels a server configures, in the order the dashboard asks
 // for them (admin → military → economy → kill feed → announcements). `key`

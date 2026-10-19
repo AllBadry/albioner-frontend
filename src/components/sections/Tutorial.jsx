@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useI18n } from '../../i18n';
+import { BOT_INVITE_URL } from '../../config';
 
 const Tutorial = () => {
   const { t, dir } = useI18n();
@@ -125,6 +126,26 @@ const Tutorial = () => {
           })}
         </div>
       </div>
+
+      {/* Add the bot to Discord */}
+      {group === 'discord' && (
+        <div className="w-full max-w-7xl z-10 mb-6">
+          <a
+            href={BOT_INVITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center justify-between gap-4 bg-red-950/40 border border-[#e62b1e]/60 rounded-2xl px-6 py-4 hover:bg-red-950/60 transition-colors"
+          >
+            <span>
+              <span className={`block text-white font-black uppercase text-sm sm:text-base ${rtl ? 'tracking-normal' : 'tracking-wide'}`}>{t('tutorial.addBotTitle')}</span>
+              <span className="block text-xs text-gray-400 mt-1">{t('tutorial.addBotDesc')}</span>
+            </span>
+            <span className={`shrink-0 bg-[#e62b1e] group-hover:bg-[#c4221a] text-white font-bold uppercase text-xs px-4 py-2 rounded-lg transition-colors ${rtl ? 'tracking-normal' : 'tracking-wide'}`}>
+              {t('hero.addBot')}
+            </span>
+          </a>
+        </div>
+      )}
 
       {/* Discord guide */}
       {group === 'discord' && (
